@@ -3,8 +3,8 @@ session_start();
 
 include('../db/connect.php');
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (!isset($_POST['username']) || !isset($_POST['password'])) {
+  die("Username and password are required.");
 }
 
 $username = trim($_POST['username']);

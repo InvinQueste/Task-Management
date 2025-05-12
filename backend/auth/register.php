@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include('../db/connect.php');
 
 $username = trim($_POST['username']);

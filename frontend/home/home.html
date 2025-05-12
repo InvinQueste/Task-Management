@@ -9,6 +9,86 @@
   </style>
 </head>
 <body>
-  <h2>Home</h2>
+  <header>
+    <h2>Task Management Dashboard</h2>
+    <div class="user-controls">
+      <span id="user-greeting">Welcome, <span id="username">User</span></span>
+      <a href="../auth/logout.php" class="logout-btn">Logout</a>
+    </div>
+  </header>
+  
+  <main>
+    <section class="task-form">
+      <h3>Add New Task</h3>
+      <form id="task-form" action="../../backend/tasks/add_task.php" method="POST">
+        <input type="text" name="task_title" placeholder="Task Title" required>
+        <textarea name="task_description" placeholder="Task Description"></textarea>
+        <input type="date" name="due_date">
+        <select name="priority">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button type="submit">Add Task</button>
+      </form>
+    </section>
+    
+    <section class="task-list">
+      <h3>Your Tasks</h3>
+      <div id="tasks-container">
+        <!-- Tasks will be loaded here dynamically -->
+        <p class="empty-state">No tasks found. Add a new task to get started!</p>
+      </div>
+    </section>
+  </main>
+  
+  <script src="../js/tasks.js"></script>
+  <script>
+    // Check if user is logged in
+    document.addEventListener('DOMContentLoaded', function() {
+      fetch('../../backend/auth/check_session.php')
+        .then(response => response.json())
+        .then(data => {
+          if (!data.loggedIn) {
+            window.location.href = '../auth/login.html';
+          } else {
+            document.getElementById('username').textContent = data.username;
+            loadTasks();
+          }
+        });
+    });
+    
+    function loadTasks() {
+      fetch('../../backend/tasks/get_tasks.php')
+        .then(response => response.json())
+        .then(tasks => {
+          const container = document.getElementById('tasks-container');
+          if (tasks.length === 0) {
+            container.innerHTML = '<p class="empty-state">No tasks found. Add a new task to get started!</p>';
+            return;
+          }
+          
+          container.innerHTML = '';
+          tasks.forEach(task => {
+            // Create task UI elements
+            const taskElement = document.createElement('div');
+            taskElement.className = `task-item priority-${task.priority}`;
+            taskElement.innerHTML = `
+              <h4>${task.title}</h4>
+              <p>${task.description}</p>
+              <div class="task-meta">
+                <span class="due-date">Due: ${task.due_date}</span>
+                <span class="priority">${task.priority}</span>
+              </div>
+              <div class="task-actions">
+                <button class="edit-btn" data-id="${task.id}">Edit</button>
+                <button class="delete-btn" data-id="${task.id}">Delete</button>
+              </div>
+            `;
+            container.appendChild(taskElement);
+          });
+        });
+    }
+  </script>
 </body>
 </html>
