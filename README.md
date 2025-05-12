@@ -1,4 +1,4 @@
-# SE Project for Group 2: Configuration Management System
+# Internet Technology Project for Group 2: Task Management System
 
 ## Members:
 
