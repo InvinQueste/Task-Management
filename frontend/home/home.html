@@ -65,11 +65,76 @@
       </select>
       <button type="submit">Add Task</button>
     </form>
+    <h3>Filter Tasks</h3>
+    <div
+      id="filters"
+      style="
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        max-width: 700px;
+        margin-bottom: 20px;
+      "
+    >
+      <input type="text" id="titleSearch" placeholder="Search title " />
+      <input
+        type="text"
+        id="descriptionSearch"
+        placeholder="Search description"
+      />
 
-    <table id="task-table">
+      <select id="priorityFilter">
+        <option value="">All Priorities</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+
+      <select id="completionFilter">
+        <option value="">All Statuses</option>
+        <option value="1">Completed</option>
+        <option value="0">Not Completed</option>
+      </select>
+
+      <label>From: <input type="date" id="fromDate" /></label>
+      <label>To: <input type="date" id="toDate" /></label>
+
+      <button onclick="resetFilters()">Reset Filters</button>
+    </div>
+    <h3>Expired Tasks</h3>
+    <table id="expired-table">
       <thead>
         <tr>
           <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Expiring Today</h3>
+    <table id="today-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Upcoming Tasks</h3>
+    <table id="upcoming-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
           <th>Due Date</th>
           <th>Priority</th>
           <th>Actions</th>
@@ -80,7 +145,20 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", loadTasks);
-
+      document
+        .getElementById("titleSearch")
+        .addEventListener("input", loadTasks);
+      document
+        .getElementById("descriptionSearch")
+        .addEventListener("input", loadTasks);
+      document
+        .getElementById("priorityFilter")
+        .addEventListener("change", loadTasks);
+      document
+        .getElementById("completionFilter")
+        .addEventListener("change", loadTasks);
+      document.getElementById("fromDate").addEventListener("change", loadTasks);
+      document.getElementById("toDate").addEventListener("change", loadTasks);
       document
         .getElementById("task-form")
         .addEventListener("submit", function (e) {
@@ -115,28 +193,102 @@
         fetch("../../backend/tasks/read.php")
           .then((res) => res.json())
           .then((tasks) => {
-            const tbody = document.querySelector("#task-table tbody");
-            tbody.innerHTML = "";
-            tasks.forEach((task) => {
-              const row = document.createElement("tr");
-              if (task.is_completed === "1" || task.is_completed === 1)
-                row.classList.add("completed");
-              row.innerHTML = `
-              <td>${task.title}</td>
-              <td>${task.due_date || "-"}</td>
-              <td>${task.priority}</td>
-              <td>
-                <button onclick="toggleComplete(${task.id}, ${
-                task.is_completed
-              })">
-                  ${task.is_completed == 1 ? "Undo" : "Complete"}
-                </button>
-                <button onclick="deleteTask(${task.id})">Delete</button>
-              </td>
-            `;
-              tbody.appendChild(row);
-            });
+            const search2 = document
+              .getElementById("descriptionSearch")
+              .value.trim()
+              .toLowerCase();
+            const search1 = document
+              .getElementById("titleSearch")
+              .value.trim()
+              .toLowerCase();
+            const priority = document.getElementById("priorityFilter").value;
+            const completion =
+              document.getElementById("completionFilter").value;
+            const fromDate = document.getElementById("fromDate").value;
+            const toDate = document.getElementById("toDate").value;
+
+            if (fromDate && toDate && fromDate > toDate) {
+              alert("From Date cannot be after To Date.");
+              return;
+            }
+
+            const today = new Date().toISOString().split("T")[0];
+            const expiredBody = document.querySelector("#expired-table tbody");
+            const todayBody = document.querySelector("#today-table tbody");
+            const upcomingBody = document.querySelector(
+              "#upcoming-table tbody"
+            );
+
+            expiredBody.innerHTML = "";
+            todayBody.innerHTML = "";
+            upcomingBody.innerHTML = "";
+
+            tasks
+              .filter((task) => {
+                if (search1) {
+                  const text = (task.title || "").toLowerCase();
+                  if (!text.includes(search1)) return false;
+                }
+                if (search2) {
+                  const text = (task.description || "").toLowerCase();
+                  if (!text.includes(search2)) return false;
+                }
+
+                if (priority && task.priority !== priority) return false;
+
+                if (
+                  completion !== "" &&
+                  String(task.is_completed) !== completion
+                )
+                  return false;
+
+                if (fromDate && (!task.due_date || task.due_date < fromDate))
+                  return false;
+                if (toDate && (!task.due_date || task.due_date > toDate))
+                  return false;
+
+                return true;
+              })
+              .forEach((task) => {
+                const dueDate = task.due_date;
+                const row = document.createElement("tr");
+                if (task.is_completed === "1" || task.is_completed === 1)
+                  row.classList.add("completed");
+
+                row.innerHTML = `
+            <td>${task.title}</td>
+            <td>${task.description || "-"}</td>
+            <td>${dueDate || "-"}</td>
+            <td>${task.priority}</td>
+            <td>
+              <button onclick="toggleComplete(${task.id}, ${
+                  task.is_completed
+                })">
+                ${task.is_completed == 1 ? "Undo" : "Complete"}
+              </button>
+              <button onclick="deleteTask(${task.id})">Delete</button>
+            </td>
+          `;
+
+                if (!dueDate) {
+                  upcomingBody.appendChild(row);
+                } else if (dueDate < today) {
+                  expiredBody.appendChild(row);
+                } else if (dueDate === today) {
+                  todayBody.appendChild(row);
+                } else {
+                  upcomingBody.appendChild(row);
+                }
+              });
           });
+      }
+      function resetFilters() {
+        document.getElementById("search").value = "";
+        document.getElementById("priorityFilter").value = "";
+        document.getElementById("completionFilter").value = "";
+        document.getElementById("fromDate").value = "";
+        document.getElementById("toDate").value = "";
+        loadTasks();
       }
 
       function toggleComplete(id, currentStatus) {

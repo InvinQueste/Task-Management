@@ -26,3 +26,4 @@ INSERT INTO users (id, username, password, created_at) VALUES
 (2, 'adfaadfa', '$2y$10$L0iJCD4QYBt9vIHMZHqbCu2OGP.lFtDoKOzdSas.Jw2Avyu2xfWyy', '2025-05-12 16:26:28'),
 (3, 'adfaadfaa', '$2y$10$.oC/N8TSVbVYn/mZlLycIu3oDl3AzbLhZwIGzfPE4K8smd/AJ.tPS', '2025-05-12 16:28:30'),
 (4, 'tester', '$2y$10$zaeaf5Naralzlzw7QuOBCu2y.f7FLOUZGZ2AtnTO4aW85zYQWUMx.', '2025-05-12 16:32:32');
+-- pwd for tester is 'tester@123'
