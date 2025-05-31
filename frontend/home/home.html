@@ -145,7 +145,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id,
-            is_completed: currentStatus ? false : true,
+            is_completed: currentStatus ? 0 : 1,
           }),
         })
           .then((res) => res.json())
