@@ -19,8 +19,8 @@ $id = $data['id'];
 $is_completed = $data['is_completed'];
 $user_id = $_SESSION['user_id'];
 
-$stmt = $conn->prepare("UPDATE tasks SET is_completed = ? WHERE id = ? AND user_id = ?");
-$stmt->bind_param("iii", $is_completed, $id, $user_id);
+$stmt = $conn->prepare("UPDATE tasks SET is_completed = '$is_completed' WHERE id = ? AND user_id = ?");
+$stmt->bind_param("ii", $id,  $user_id);
 
 if ($stmt->execute()) {
   echo json_encode(["success" => true]);
