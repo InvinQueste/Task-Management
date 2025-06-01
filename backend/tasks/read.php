@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 include('../db/connect.php');
 
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT id, title, description, due_date, priority, is_completed FROM tasks WHERE user_id = ?");
+$stmt = $conn->prepare("SELECT id, title, created_at, description, due_date, priority, is_completed FROM tasks WHERE user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 
