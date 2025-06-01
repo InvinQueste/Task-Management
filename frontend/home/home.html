@@ -3,146 +3,110 @@
 
 <head>
   <title>Task Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f0f2f5;
-    }
-
-    h2 {
-      margin-bottom: 10px;
-    }
-
-    #task-form {
-      margin-bottom: 20px;
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      max-width: 500px;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-    }
-
-    th,
-    td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    .completed {
-      text-decoration: line-through;
-      color: gray;
-    }
-  </style>
+  <link rel="stylesheet" href="homeStyle.css">
 </head>
 
 <body>
-  <h2>Welcome to Your Task Dashboard</h2>
-  <button onclick="logout()">Logout</button>
+  <div id="sidebar">
+    <div class="profile">
+      <img src="profile_image.jpg" alt="User Profile" />
+      <p class="email">user@gmail.com</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="#">ToDo</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div id="main-content">
+    <div id="notification" class="hidden"></div>
+    <button class="logout-button" onclick="logout()">Logout</button>
+    <h2>Welcome to Your Task Dashboard</h2>
 
-  <form id="task-form">
-    <input type="text" id="title" placeholder="Task title" required />
-    <textarea id="description" placeholder="Description (optional)"></textarea>
-    <input type="date" id="due_date" />
-    <select id="priority">
-      <option value="Low">Low</option>
-      <option value="Medium" selected>Medium</option>
-      <option value="High">High</option>
-    </select>
-    <button type="submit">Add Task</button>
-  </form>
-  <h3>Filter Tasks</h3>
-  <div id="filters" style="
+    <form id="task-form">
+      <input type="text" id="title" placeholder="Task title" required />
+      <textarea id="description" placeholder="Description (optional)"></textarea>
+      <input type="date" id="due_date" />
+      <select id="priority">
+        <option value="Low">Low</option>
+        <option value="Medium" selected>Medium</option>
+        <option value="High">High</option>
+      </select>
+      <button type="submit">Add Task</button>
+    </form>
+    <h3>Filter Tasks</h3>
+    <div id="filters" style="
         background: #fff;
         padding: 15px;
         border-radius: 8px;
         max-width: 700px;
         margin-bottom: 20px;
       ">
-    <input type="text" id="titleSearch" placeholder="Search title " />
-    <input type="text" id="descriptionSearch" placeholder="Search description" />
+      <input type="text" id="titleSearch" placeholder="Search title " />
+      <input type="text" id="descriptionSearch" placeholder="Search description" />
 
-    <select id="priorityFilter">
-      <option value="">All Priorities</option>
-      <option value="Low">Low</option>
-      <option value="Medium">Medium</option>
-      <option value="High">High</option>
-    </select>
+      <select id="priorityFilter">
+        <option value="">All Priorities</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
 
-    <select id="completionFilter">
-      <option value="">All Statuses</option>
-      <option value="1">Completed</option>
-      <option value="0">Not Completed</option>
-    </select>
+      <select id="completionFilter">
+        <option value="">All Statuses</option>
+        <option value="1">Completed</option>
+        <option value="0">Not Completed</option>
+      </select>
 
-    <label>From: <input type="date" id="fromDate" /></label>
-    <label>To: <input type="date" id="toDate" /></label>
+      <label>From: <input type="date" id="fromDate" /></label>
+      <label>To: <input type="date" id="toDate" /></label>
 
-    <button onclick="resetFilters()">Reset Filters</button>
-  </div>
-  <h3>Expired Tasks</h3>
-  <table id="expired-table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Due Date</th>
-        <th>Priority</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+      <button onclick="resetFilters()">Reset Filters</button>
+    </div>
+    <h3>Expired Tasks</h3>
+    <table id="expired-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <h3>Expiring Today</h3>
-  <table id="today-table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Due Date</th>
-        <th>Priority</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <h3>Expiring Today</h3>
+    <table id="today-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <h3>Upcoming Tasks</h3>
-  <table id="upcoming-table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Due Date</th>
-        <th>Priority</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <h3>Upcoming Tasks</h3>
+    <table id="upcoming-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <div id="reassign-modal" style="
+    <div id="reassign-modal" style="
   display: none;
   position: fixed;
   top: 30%;
@@ -154,11 +118,12 @@
   border-radius: 10px;
   z-index: 1000;
 ">
-    <h4>Reassign Task Due Date</h4>
-    <input type="date" id="newDueDate" />
-    <br /><br />
-    <button onclick="submitReassign()">Save</button>
-    <button onclick="closeReassignModal()">Cancel</button>
+      <h4>Reassign Task Due Date</h4>
+      <input type="date" id="newDueDate" />
+      <br /><br />
+      <button onclick="submitReassign()">Save</button>
+      <button onclick="closeReassignModal()">Cancel</button>
+    </div>
   </div>
 
   <script>
@@ -361,8 +326,11 @@
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.success) loadTasks();
-          else alert("Failed to update status");
+          if (data.success) {
+            loadTasks();
+            showNotification("Task updated successfully!", "success");
+          }
+          else showNotification("Failed to update status");
         });
     }
 
@@ -375,8 +343,11 @@
         })
           .then((res) => res.json())
           .then((data) => {
-            if (data.success) loadTasks();
-            else alert("Failed to delete task");
+            if (data.success) {
+              loadTasks();
+              showNotification("Task deleted successfully!", "success");
+            }
+            else showNotification("Failed to delete task", "error");
           });
       }
     }
@@ -386,6 +357,22 @@
         () => (location.href = "../../frontend/auth/login.html")
       );
     }
+
+    function showNotification(message, type = "success") {
+      const notif = document.getElementById("notification");
+      notif.className = `show ${type}`;
+      notif.textContent = message;
+
+      setTimeout(() => {
+        notif.className = notif.className.replace("show", "");
+        setTimeout(() => {
+          notif.style.display = "none";
+        }, 400);
+      }, 2500);
+
+      notif.style.display = "block";
+    }
+
   </script>
 </body>
 
