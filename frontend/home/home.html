@@ -53,10 +53,7 @@
 
     <form id="task-form">
       <input type="text" id="title" placeholder="Task title" required />
-      <textarea
-        id="description"
-        placeholder="Description (optional)"
-      ></textarea>
+      <textarea id="description" placeholder="Description (optional)"></textarea>
       <input type="date" id="due_date" />
       <select id="priority">
         <option value="Low">Low</option>
@@ -66,22 +63,15 @@
       <button type="submit">Add Task</button>
     </form>
     <h3>Filter Tasks</h3>
-    <div
-      id="filters"
-      style="
+    <div id="filters" style="
         background: #fff;
         padding: 15px;
         border-radius: 8px;
         max-width: 700px;
         margin-bottom: 20px;
-      "
-    >
+      ">
       <input type="text" id="titleSearch" placeholder="Search title " />
-      <input
-        type="text"
-        id="descriptionSearch"
-        placeholder="Search description"
-      />
+      <input type="text" id="descriptionSearch" placeholder="Search description" />
 
       <select id="priorityFilter">
         <option value="">All Priorities</option>
@@ -144,6 +134,20 @@
     </table>
 
     <script>
+      // Check if user is logged in
+      fetch("../../backend/auth/authenticate.php")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.loggedIn) {
+            // Redirect to login page
+            window.location.href = "../../frontend/auth/login.html";
+          }
+        })
+        .catch(() => {
+          alert("Failed to check login status.");
+          window.location.href = "../../frontend/auth/login.html";
+        });
+
       document.addEventListener("DOMContentLoaded", loadTasks);
       document
         .getElementById("titleSearch")
@@ -261,9 +265,8 @@
             <td>${dueDate || "-"}</td>
             <td>${task.priority}</td>
             <td>
-              <button onclick="toggleComplete(${task.id}, ${
-                  task.is_completed
-                })">
+              <button onclick="toggleComplete(${task.id}, ${task.is_completed
+                  })">
                 ${task.is_completed == 1 ? "Undo" : "Complete"}
               </button>
               <button onclick="deleteTask(${task.id})">Delete</button>
