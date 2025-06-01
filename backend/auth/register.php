@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 
 include('../db/connect.php');
 
@@ -7,19 +8,20 @@ $username = trim($_POST['username']);
 $password = $_POST['password'];
 
 if (empty($username) || empty($password)) {
-    die("All fields are required.");
+    echo json_encode(['success' => false, 'message' => 'All fields are required.']);
+    exit;
 }
 
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-// Check if user exists
 $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
 $stmt->bind_param("s", $username);
 $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows > 0) {
-    die("Username or email already exists.");
+    echo json_encode(['success' => false, 'message' => 'Username already exists.']);
+    exit;
 }
 
 $stmt->close();
@@ -29,11 +31,10 @@ $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
 $stmt->bind_param("ss", $username, $hashedPassword);
 
 if ($stmt->execute()) {
-    echo "Registration successful. <a href='../../frontend/auth/login.html'>Login now</a>";
+    echo json_encode(['success' => true, 'message' => 'Registration successful. You can now log in.']);
 } else {
-    echo "Error: " . $stmt->error;
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $stmt->error]);
 }
 
 $stmt->close();
 $conn->close();
-?>

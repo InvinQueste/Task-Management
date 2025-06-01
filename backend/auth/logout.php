@@ -8,6 +8,5 @@ $_SESSION = [];
 session_destroy();
 
 // Redirect to login page (or send JSON if API)
-header("Location: ../../fronend/auth/login.html");
+header("Location: ../../frontend/auth/login.html");
 exit;
-?>
