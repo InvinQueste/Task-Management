@@ -1,413 +1,392 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Task Dashboard</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        background: #f0f2f5;
-      }
-      h2 {
-        margin-bottom: 10px;
-      }
-      #task-form {
-        margin-bottom: 20px;
-        background: #fff;
-        padding: 15px;
-        border-radius: 8px;
-        max-width: 500px;
-      }
-      input,
-      select,
-      textarea {
-        width: 100%;
-        padding: 10px;
-        margin: 6px 0;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #fff;
-      }
-      th,
-      td {
-        padding: 12px;
-        border: 1px solid #ddd;
-        text-align: left;
-      }
-      th {
-        background-color: #f2f2f2;
-      }
-      .completed {
-        text-decoration: line-through;
-        color: gray;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>Welcome to Your Task Dashboard</h2>
-    <button onclick="logout()">Logout</button>
 
-    <form id="task-form">
-      <input type="text" id="title" placeholder="Task title" required />
-      <textarea
-        id="description"
-        placeholder="Description (optional)"
-      ></textarea>
-      <input type="date" id="due_date" />
-      <select id="priority">
-        <option value="Low">Low</option>
-        <option value="Medium" selected>Medium</option>
-        <option value="High">High</option>
-      </select>
-      <button type="submit">Add Task</button>
-    </form>
-    <h3>Filter Tasks</h3>
-    <div
-      id="filters"
-      style="
-        background: #fff;
-        padding: 15px;
-        border-radius: 8px;
-        max-width: 700px;
-        margin-bottom: 20px;
-      "
-    >
-      <input type="text" id="titleSearch" placeholder="Search title " />
-      <input
-        type="text"
-        id="descriptionSearch"
-        placeholder="Search description"
-      />
+<head>
+  <title>Task Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f2f5;
+    }
 
-      <select id="priorityFilter">
-        <option value="">All Priorities</option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-      </select>
+    h2 {
+      margin-bottom: 10px;
+    }
 
-      <select id="completionFilter">
-        <option value="">All Statuses</option>
-        <option value="1">Completed</option>
-        <option value="0">Not Completed</option>
-      </select>
+    #task-form {
+      margin-bottom: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      max-width: 500px;
+    }
 
-      <label>From: <input type="date" id="fromDate" /></label>
-      <label>To: <input type="date" id="toDate" /></label>
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
 
-      <button onclick="resetFilters()">Reset Filters</button>
-    </div>
-    <div
-      id="sort-options"
-      style="
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Welcome to Your Task Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+
+  <form id="task-form">
+    <input type="text" id="title" placeholder="Task title" required />
+    <textarea id="description" placeholder="Description (optional)"></textarea>
+    <input type="date" id="due_date" />
+    <select id="priority">
+      <option value="Low">Low</option>
+      <option value="Medium" selected>Medium</option>
+      <option value="High">High</option>
+    </select>
+    <button type="submit">Add Task</button>
+  </form>
+  <h3>Filter Tasks</h3>
+  <div id="filters" style="
         background: #fff;
         padding: 15px;
         border-radius: 8px;
         max-width: 700px;
         margin-bottom: 20px;
-      "
-    >
-      <label for="global-sort">Sort By: </label>
-      <select id="global-sort">
-        <option value="">-- No Sort --</option>
+      ">
+    <input type="text" id="titleSearch" placeholder="Search title " />
+    <input type="text" id="descriptionSearch" placeholder="Search description" />
 
-        <optgroup label="Title">
-          <option value="title|asc">A to Z</option>
-          <option value="title|desc">Z to A</option>
-        </optgroup>
+    <select id="priorityFilter">
+      <option value="">All Priorities</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
 
-        <optgroup label="Description">
-          <option value="description|asc">A to Z</option>
-          <option value="description|desc">Z to A</option>
-        </optgroup>
+    <select id="completionFilter">
+      <option value="">All Statuses</option>
+      <option value="1">Completed</option>
+      <option value="0">Not Completed</option>
+    </select>
 
-        <optgroup label="Priority">
-          <option value="priority|high">High to Low</option>
-          <option value="priority|low">Low to High</option>
-        </optgroup>
+    <label>From: <input type="date" id="fromDate" /></label>
+    <label>To: <input type="date" id="toDate" /></label>
 
-        <optgroup label="Due Date">
-          <option value="due_date|asc">Earliest First</option>
-          <option value="due_date|desc">Latest First</option>
-        </optgroup>
-      </select>
-      <button onclick="resetsorts()">Reset Sorting</button>
-    </div>
+    <button onclick="resetFilters()">Reset Filters</button>
+  </div>
+  <h3>Expired Tasks</h3>
+  <table id="expired-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Due Date</th>
+        <th>Priority</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <h3>Expired Tasks</h3>
-    <table id="expired-table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <h3>Expiring Today</h3>
+  <table id="today-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Due Date</th>
+        <th>Priority</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <h3>Expiring Today</h3>
-    <table id="today-table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <h3>Upcoming Tasks</h3>
+  <table id="upcoming-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Due Date</th>
+        <th>Priority</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <h3>Upcoming Tasks</h3>
-    <table id="upcoming-table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div id="reassign-modal" style="
+  display: none;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  z-index: 1000;
+">
+    <h4>Reassign Task Due Date</h4>
+    <input type="date" id="newDueDate" />
+    <br /><br />
+    <button onclick="submitReassign()">Save</button>
+    <button onclick="closeReassignModal()">Cancel</button>
+  </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", loadTasks);
-      document
-        .getElementById("titleSearch")
-        .addEventListener("input", loadTasks);
-      document
-        .getElementById("descriptionSearch")
-        .addEventListener("input", loadTasks);
-      document
-        .getElementById("priorityFilter")
-        .addEventListener("change", loadTasks);
-      document
-        .getElementById("completionFilter")
-        .addEventListener("change", loadTasks);
-      document.getElementById("fromDate").addEventListener("change", loadTasks);
-      document.getElementById("toDate").addEventListener("change", loadTasks);
-      document
-        .getElementById("global-sort")
-        .addEventListener("change", loadTasks);
+  <script>
+    let reassignTaskId = null;
 
-      document
-        .getElementById("task-form")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const title = document.getElementById("title").value;
-          const description = document.getElementById("description").value;
-          const dueDate = document.getElementById("due_date").value;
-          const priority = document.getElementById("priority").value;
+    function openReassignModal(taskId) {
+      reassignTaskId = taskId;
+      document.getElementById("newDueDate").value = "";
+      document.getElementById("reassign-modal").style.display = "block";
+    }
 
-          fetch("../../backend/tasks/create.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title,
-              description,
-              due_date: dueDate,
-              priority,
-            }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.success) {
-                loadTasks();
-                document.getElementById("task-form").reset();
-              } else {
-                alert(data.error || "Failed to create task");
-              }
-            });
+    function closeReassignModal() {
+      document.getElementById("reassign-modal").style.display = "none";
+    }
+
+    function submitReassign() {
+      const newDate = document.getElementById("newDueDate").value;
+      if (!newDate) {
+        alert("Please select a new due date.");
+        return;
+      }
+
+      fetch("../../backend/tasks/update.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: reassignTaskId,
+          due_date: newDate,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            loadTasks();
+            closeReassignModal();
+          } else {
+            alert("Failed to reassign task");
+          }
         });
+    }
 
-      function loadTasks() {
-        fetch("../../backend/tasks/read.php")
-          .then((res) => res.json())
-          .then((tasks) => {
-            const search2 = document
-              .getElementById("descriptionSearch")
-              .value.trim()
-              .toLowerCase();
-            const search1 = document
-              .getElementById("titleSearch")
-              .value.trim()
-              .toLowerCase();
-            const priority = document.getElementById("priorityFilter").value;
-            const completion =
-              document.getElementById("completionFilter").value;
-            const fromDate = document.getElementById("fromDate").value;
-            const toDate = document.getElementById("toDate").value;
-            const sortValue = document.getElementById("global-sort").value;
+    document.addEventListener("DOMContentLoaded", loadTasks);
+    document
+      .getElementById("titleSearch")
+      .addEventListener("input", loadTasks);
+    document
+      .getElementById("descriptionSearch")
+      .addEventListener("input", loadTasks);
+    document
+      .getElementById("priorityFilter")
+      .addEventListener("change", loadTasks);
+    document
+      .getElementById("completionFilter")
+      .addEventListener("change", loadTasks);
+    document.getElementById("fromDate").addEventListener("change", loadTasks);
+    document.getElementById("toDate").addEventListener("change", loadTasks);
+    document
+      .getElementById("task-form")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const dueDate = document.getElementById("due_date").value;
+        const priority = document.getElementById("priority").value;
 
-            if (fromDate && toDate && fromDate > toDate) {
-              alert("From Date cannot be after To Date.");
-              return;
-            }
-
-            const today = new Date().toISOString().split("T")[0];
-            const expiredBody = document.querySelector("#expired-table tbody");
-            const todayBody = document.querySelector("#today-table tbody");
-            const upcomingBody = document.querySelector(
-              "#upcoming-table tbody"
-            );
-
-            expiredBody.innerHTML = "";
-            todayBody.innerHTML = "";
-            upcomingBody.innerHTML = "";
-            if (sortValue) {
-              const [field, order] = sortValue.split("|");
-              tasks.sort((a, b) => {
-                let valA = a[field] || "";
-                let valB = b[field] || "";
-
-                let result = 0;
-
-                if (field === "priority") {
-                  const priorityMap = { High: 3, Medium: 2, Low: 1 };
-                  valA = priorityMap[a.priority] || 0;
-                  valB = priorityMap[b.priority] || 0;
-                  result = order === "high" ? valB - valA : valA - valB;
-                } else if (field === "due_date") {
-                  result =
-                    order === "asc"
-                      ? valA.localeCompare(valB)
-                      : valB.localeCompare(valA);
-                } else if (
-                  typeof valA === "string" &&
-                  typeof valB === "string"
-                ) {
-                  result =
-                    order === "asc"
-                      ? valA.localeCompare(valB)
-                      : valB.localeCompare(valA);
-                }
-
-                if (result === 0) {
-                  return a.created_at.localeCompare(b.created_at);
-                }
-                return result;
-              });
-            }
-
-            tasks
-              .filter((task) => {
-                if (search1) {
-                  const text = (task.title || "").toLowerCase();
-                  if (!text.includes(search1)) return false;
-                }
-                if (search2) {
-                  const text = (task.description || "").toLowerCase();
-                  if (!text.includes(search2)) return false;
-                }
-
-                if (priority && task.priority !== priority) return false;
-
-                if (
-                  completion !== "" &&
-                  String(task.is_completed) !== completion
-                )
-                  return false;
-
-                if (fromDate && (!task.due_date || task.due_date < fromDate))
-                  return false;
-                if (toDate && (!task.due_date || task.due_date > toDate))
-                  return false;
-
-                return true;
-              })
-              .forEach((task) => {
-                const dueDate = task.due_date;
-                const row = document.createElement("tr");
-                if (task.is_completed === "1" || task.is_completed === 1)
-                  row.classList.add("completed");
-
-                row.innerHTML = `
-            <td>${task.title}</td>
-            <td>${task.description || "-"}</td>
-            <td>${dueDate || "-"}</td>
-            <td>${task.priority}</td>
-            <td>
-              <button onclick="toggleComplete(${task.id}, ${
-                  task.is_completed
-                })">
-                ${task.is_completed == 1 ? "Undo" : "Complete"}
-              </button>
-              <button onclick="deleteTask(${task.id})">Delete</button>
-            </td>
-          `;
-
-                if (!dueDate) {
-                  upcomingBody.appendChild(row);
-                } else if (dueDate < today) {
-                  expiredBody.appendChild(row);
-                } else if (dueDate === today) {
-                  todayBody.appendChild(row);
-                } else {
-                  upcomingBody.appendChild(row);
-                }
-              });
-          });
-      }
-      function resetFilters() {
-        document.getElementById("titleSearch").value = "";
-        document.getElementById("descriptionSearch").value = "";
-        document.getElementById("priorityFilter").value = "";
-        document.getElementById("completionFilter").value = "";
-        document.getElementById("fromDate").value = "";
-        document.getElementById("toDate").value = "";
-        loadTasks();
-      }
-      function resetsorts() {
-        document.getElementById("global-sort").value = "";
-        loadTasks();
-      }
-
-      function toggleComplete(id, currentStatus) {
-        fetch("../../backend/tasks/update.php", {
+        fetch("../../backend/tasks/create.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            id,
-            is_completed: currentStatus ? 0 : 1,
+            title,
+            description,
+            due_date: dueDate,
+            priority,
           }),
         })
           .then((res) => res.json())
           .then((data) => {
+            if (data.success) {
+              loadTasks();
+              document.getElementById("task-form").reset();
+            } else {
+              alert(data.error || "Failed to create task");
+            }
+          });
+      });
+
+    function loadTasks() {
+      fetch("../../backend/tasks/read.php")
+        .then((res) => res.json())
+        .then((tasks) => {
+          const search2 = document
+            .getElementById("descriptionSearch")
+            .value.trim()
+            .toLowerCase();
+          const search1 = document
+            .getElementById("titleSearch")
+            .value.trim()
+            .toLowerCase();
+          const priority = document.getElementById("priorityFilter").value;
+          const completion =
+            document.getElementById("completionFilter").value;
+          const fromDate = document.getElementById("fromDate").value;
+          const toDate = document.getElementById("toDate").value;
+
+          if (fromDate && toDate && fromDate > toDate) {
+            alert("From Date cannot be after To Date.");
+            return;
+          }
+
+          const today = new Date().toISOString().split("T")[0];
+          const expiredBody = document.querySelector("#expired-table tbody");
+          const todayBody = document.querySelector("#today-table tbody");
+          const upcomingBody = document.querySelector(
+            "#upcoming-table tbody"
+          );
+
+          expiredBody.innerHTML = "";
+          todayBody.innerHTML = "";
+          upcomingBody.innerHTML = "";
+
+          tasks
+            .filter((task) => {
+              if (search1) {
+                const text = (task.title || "").toLowerCase();
+                if (!text.includes(search1)) return false;
+              }
+              if (search2) {
+                const text = (task.description || "").toLowerCase();
+                if (!text.includes(search2)) return false;
+              }
+
+              if (priority && task.priority !== priority) return false;
+
+              if (
+                completion !== "" &&
+                String(task.is_completed) !== completion
+              )
+                return false;
+
+              if (fromDate && (!task.due_date || task.due_date < fromDate))
+                return false;
+              if (toDate && (!task.due_date || task.due_date > toDate))
+                return false;
+
+              return true;
+            })
+            .forEach((task) => {
+              const dueDate = task.due_date;
+              const row = document.createElement("tr");
+              if (task.is_completed === "1" || task.is_completed === 1)
+                row.classList.add("completed");
+
+              row.innerHTML = `
+  <td>${task.title}</td>
+  <td>${task.description || "-"}</td>
+  <td>${dueDate || "-"}</td>
+  <td>${task.priority}</td>
+  <td>
+    <button onclick="toggleComplete(${task.id}, ${task.is_completed})">
+      ${task.is_completed == 1 ? "Undo" : "Complete"}
+    </button>
+    <button onclick="deleteTask(${task.id})">Delete</button>
+    ${dueDate && dueDate < today
+                  ? `<button onclick="openReassignModal(${task.id})">Reassign</button>`
+                  : ""
+                }
+  </td>
+`;
+
+              if (!dueDate) {
+                upcomingBody.appendChild(row);
+              } else if (dueDate < today) {
+                expiredBody.appendChild(row);
+              } else if (dueDate === today) {
+                todayBody.appendChild(row);
+              } else {
+                upcomingBody.appendChild(row);
+              }
+            });
+        });
+    }
+    function resetFilters() {
+      document.getElementById("titleSearch").value = "";
+      document.getElementById("descriptionSearch").value = "";
+      document.getElementById("priorityFilter").value = "";
+      document.getElementById("completionFilter").value = "";
+      document.getElementById("fromDate").value = "";
+      document.getElementById("toDate").value = "";
+      loadTasks();
+    }
+
+    function toggleComplete(id, currentStatus) {
+      fetch("../../backend/tasks/update.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id,
+          is_completed: currentStatus ? 0 : 1,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) loadTasks();
+          else alert("Failed to update status");
+        });
+    }
+
+    function deleteTask(id) {
+      if (confirm("Are you sure you want to delete this task?")) {
+        fetch("../../backend/tasks/delete.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
             if (data.success) loadTasks();
-            else alert("Failed to update status");
+            else alert("Failed to delete task");
           });
       }
+    }
 
-      function deleteTask(id) {
-        if (confirm("Are you sure you want to delete this task?")) {
-          fetch("../../backend/tasks/delete.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.success) loadTasks();
-              else alert("Failed to delete task");
-            });
-        }
-      }
+    function logout() {
+      fetch("../../backend/auth/logout.php").then(
+        () => (location.href = "../../frontend/auth/login.html")
+      );
+    }
+  </script>
+</body>
 
-      function logout() {
-        fetch("../../backend/auth/logout.php").then(
-          () => (location.href = "../../frontend/auth/login.html")
-        );
-      }
-    </script>
-  </body>
 </html>
