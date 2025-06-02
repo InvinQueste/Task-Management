@@ -11,12 +11,10 @@ if (!isset($_POST['username']) || !isset($_POST['password'])) {
 $username = trim($_POST['username']);
 $password = $_POST['password'];
 
-$stmt = $conn->prepare("SELECT id, username, password FROM users WHERE username = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
+$query = "SELECT id, username, password FROM users WHERE username = '$username'";
+$result = mysqli_query($conn, $query);
 
-if ($user = $result->fetch_assoc()) {
+if ($user = mysqli_fetch_assoc($result)) {
   if (password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
@@ -28,5 +26,4 @@ if ($user = $result->fetch_assoc()) {
   echo json_encode(['success' => false, 'message' => 'User not found.']);
 }
 
-$stmt->close();
-$conn->close();
+mysqli_close($conn);

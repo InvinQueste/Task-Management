@@ -18,15 +18,12 @@ include('../db/connect.php');
 $id = $data['id'];
 $user_id = $_SESSION['user_id'];
 
-$stmt = $conn->prepare("DELETE FROM tasks WHERE id = ? AND user_id = ?");
-$stmt->bind_param("ii", $id, $user_id);
+$query = "DELETE FROM tasks WHERE id = '$id' AND user_id = '$user_id'";
 
-if ($stmt->execute()) {
-  echo json_encode(["success" => true]);
+if (!mysqli_query($conn, $query)) {
+  echo json_encode(["success" => false, "error" => mysqli_error($conn)]);
 } else {
-  echo json_encode(["success" => false, "error" => $stmt->error]);
+  echo json_encode(["success" => true]);
 }
 
-$stmt->close();
-$conn->close();
-?>
+mysqli_close($conn);

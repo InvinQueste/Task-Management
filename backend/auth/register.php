@@ -14,27 +14,26 @@ if (empty($username) || empty($password)) {
 
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$stmt->store_result();
+$query = "SELECT id FROM users WHERE username = '$username'";
+$result = mysqli_query($conn, $query);
 
-if ($stmt->num_rows > 0) {
-    echo json_encode(['success' => false, 'message' => 'Username already exists.']);
+if (!$result) {
+    echo json_encode(['success' => false, 'message' => 'Query error: ' . mysqli_error($conn)]);
+    mysqli_close($conn);
     exit;
 }
 
-$stmt->close();
-
-// Insert new user
-$stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-$stmt->bind_param("ss", $username, $hashedPassword);
-
-if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Registration successful. You can now log in.']);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $stmt->error]);
+if (mysqli_num_rows($result) > 0) {
+    echo json_encode(['success' => false, 'message' => 'Username already exists.']);
+    mysqli_close($conn);
+    exit;
 }
 
-$stmt->close();
-$conn->close();
+$inquery = "INSERT INTO users (username, password) VALUES ('$username', '$hashedPassword')";
+if (mysqli_query($conn, $inquery)) {
+    echo json_encode(['success' => true, 'message' => 'Registration successful. You can now log in.']);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . mysqli_error($conn)]);
+}
+
+mysqli_close($conn);
