@@ -23,20 +23,36 @@
       <button class="logout-button" onclick="logout()">Logout</button>
       <h2>Welcome to Your Task Dashboard</h2>
 
-      <form id="task-form">
-        <input type="text" id="title" placeholder="Task title" required />
-        <textarea
-          id="description"
-          placeholder="Description (optional)"
-        ></textarea>
-        <input type="date" id="due_date" />
-        <select id="priority">
-          <option value="Low">Low</option>
-          <option value="Medium" selected>Medium</option>
-          <option value="High">High</option>
-        </select>
-        <button type="submit">Add Task</button>
-      </form>
+      <button id="open-add-task-modal" style="margin-bottom: 20px">
+        Add Task
+      </button>
+
+      <div id="add-task-modal" class="main-popup">
+        <h3>Add Task</h3>
+        <form id="modal-task-form">
+          <input
+            type="text"
+            id="modal-title"
+            placeholder="Task title"
+            required
+          />
+          <textarea
+            id="modal-description"
+            placeholder="Description (optional)"
+          ></textarea>
+          <input type="date" id="modal-due_date" />
+          <select id="modal-priority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+          <div style="margin-top: 12px">
+            <button type="submit">Add Task</button>
+            <button type="button" onclick="closeAddTaskModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
       <h3>Filter Tasks</h3>
       <div
         id="filters"
@@ -136,6 +152,38 @@
         <button onclick="submitReassign()">Save</button>
         <button onclick="closeReassignModal()">Cancel</button>
       </div>
+
+      <div id="message-modal" class="message-popup">
+        <div
+          style="
+            background: white;
+            padding: 28px 32px;
+            border-radius: 10px;
+            min-width: 260px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            text-align: center;
+          "
+        >
+          <div
+            id="message-modal-text"
+            style="margin-bottom: 18px; font-size: 16px"
+          ></div>
+          <button
+            onclick="closeMessagePopup()"
+            style="
+              padding: 8px 24px;
+              border: none;
+              border-radius: 6px;
+              background: #3498db;
+              color: white;
+              font-size: 15px;
+              cursor: pointer;
+            "
+          >
+            OK
+          </button>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -204,6 +252,68 @@
         .addEventListener("change", loadTasks);
       document.getElementById("fromDate").addEventListener("change", loadTasks);
       document.getElementById("toDate").addEventListener("change", loadTasks);
+
+      const addTaskModal = document.getElementById("add-task-modal");
+      const openAddTaskBtn = document.getElementById("open-add-task-modal");
+      const modalTaskForm = document.getElementById("modal-task-form");
+
+      openAddTaskBtn.onclick = function () {
+        addTaskModal.style.display = "block";
+      };
+
+      function closeAddTaskModal() {
+        addTaskModal.style.display = "none";
+        modalTaskForm.reset();
+      }
+
+      modalTaskForm.onsubmit = function (e) {
+        e.preventDefault();
+        const title = document.getElementById("modal-title").value;
+        const description = document.getElementById("modal-description").value;
+        const dueDate = document.getElementById("modal-due_date").value;
+        const priority = document.getElementById("modal-priority").value;
+
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        if (!title) {
+          showMessagePopup("Title must be set");
+          return;
+        }
+        if (!dueDate) {
+          showMessagePopup("Date must be set");
+          return;
+        }
+        if (dueDate < todayStr) {
+          showMessagePopup("Date cannot be before current date");
+          return;
+        }
+
+        fetch("../../backend/tasks/create.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title,
+            description,
+            due_date: dueDate,
+            priority,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              loadTasks();
+              closeAddTaskModal();
+              showMessagePopup("Task added successfully!");
+            } else {
+              showMessagePopup(data.error || "Failed to create task");
+            }
+          });
+      };
+
       document
         .getElementById("task-form")
         .addEventListener("submit", function (e) {
@@ -400,6 +510,14 @@
         }, 2500);
 
         notif.style.display = "block";
+      }
+      function showMessagePopup(message) {
+        const popup = document.getElementById("message-modal");
+        document.getElementById("message-modal-text").textContent = message;
+        popup.style.display = "flex";
+      }
+      function closeMessagePopup() {
+        document.getElementById("message-modal").style.display = "none";
       }
     </script>
   </body>
