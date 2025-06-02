@@ -53,41 +53,62 @@
         </form>
       </div>
 
-      <h3>Filter Tasks</h3>
       <div
         id="filters"
         style="
           background: #fff;
           padding: 15px;
           border-radius: 8px;
-          max-width: 700px;
+          width: 100%;
+          max-width: none;
           margin-bottom: 20px;
         "
       >
-        <input type="text" id="titleSearch" placeholder="Search title " />
-        <input
-          type="text"
-          id="descriptionSearch"
-          placeholder="Search description"
-        />
-
-        <select id="priorityFilter">
-          <option value="">All Priorities</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
-
-        <select id="completionFilter">
-          <option value="">All Statuses</option>
-          <option value="1">Completed</option>
-          <option value="0">Not Completed</option>
-        </select>
-
-        <label>From: <input type="date" id="fromDate" /></label>
-        <label>To: <input type="date" id="toDate" /></label>
-
-        <button onclick="resetFilters()">Reset Filters</button>
+        <!-- Date filters row -->
+        <div
+          style="
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+          "
+        >
+          <label style="margin-bottom: 0">
+            From: <input type="date" id="fromDate" />
+          </label>
+          <label style="margin-bottom: 0">
+            To: <input type="date" id="toDate" />
+          </label>
+        </div>
+        <!-- Searchbars, dropdowns, and reset button row -->
+        <div style="display: flex; gap: 10px; align-items: center; width: 100%">
+          <input
+            type="text"
+            id="titleSearch"
+            placeholder="Title"
+            style="width: 35%; min-width: 80px"
+          />
+          <input
+            type="text"
+            id="descriptionSearch"
+            placeholder="Description"
+            style="width: 35%; min-width: 80px"
+          />
+          <select id="priorityFilter" style="width: 12%; min-width: 70px">
+            <option value="">All Priorities</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <select id="completionFilter" style="width: 12%; min-width: 70px">
+            <option value="">All Statuses</option>
+            <option value="1">Completed</option>
+            <option value="0">Not Completed</option>
+          </select>
+          <button onclick="resetFilters()" style="width: 6%; min-width: 60px">
+            Reset
+          </button>
+        </div>
       </div>
       <h3>Expired Tasks</h3>
       <table id="expired-table">
