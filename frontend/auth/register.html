@@ -1,30 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Register</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Register</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="auth-container">
+      <div class="auth-left">
+        <img src="../assets/illustration.jpg" alt="Study Illustration" />
+        <h2>Your Task Buddy</h2>
+        <p>Unlock your potential by creating your account</p>
+      </div>
 
-<body>
-  <div class="auth-container">
-    <div class="auth-left">
-      <img src="../assets/illustration.jpg" alt="Study Illustration" />
-      <h2>Your Task Buddy</h2>
-      <p>Unlock your potential by creating your account</p>
+      <div class="auth-right">
+        <h1 class="brand">CREATE <span>ACCOUNT</span></h1>
+        <form id="registerForm">
+          <input type="text" name="username" placeholder="Username" required />
+          <input type="password" name="password" placeholder="Password" required />
+          <button type="submit">Register</button>
+          <p class="auth-link"> Already have an account? <a href="login.html">Login</a></p>
+        </form>
+        <div id="message"></div>
+      </div>
     </div>
+    <script>
+      const form = document.getElementById('registerForm');
+      const messageDiv = document.getElementById('message');
 
-    <div class="auth-right">
-      <h1 class="brand">CREATE <span>ACCOUNT</span></h1>
-      <form action="../../backend/auth/register.php" method="POST" class="form-box">
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit">Register</button>
-        <p class="auth-link"> Already have an account? <a href="login.html">Login</a></p>
-      </form>
-    </div>
-  </div>
-</body>
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
 
+        const formData = new FormData(form);
+
+        fetch('../../backend/auth/register.php', {
+          method: 'POST',
+          body: formData
+        })
+          .then(res => res.json())
+          .then(data => {
+            messageDiv.textContent = data.message;
+            messageDiv.className = data.success ? 'success' : 'error';
+            if (data.success) {
+              form.reset();
+              setTimeout(() => {
+                window.location.href = 'login.html';
+              }, 1000);
+            }
+          })
+          .catch(err => {
+            messageDiv.textContent = "Something went wrong.";
+            messageDiv.className = 'error';
+          });
+      });
+    </script>
+  </body>
 </html>

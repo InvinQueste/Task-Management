@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 
 include('../db/connect.php');
 
@@ -7,33 +8,32 @@ $username = trim($_POST['username']);
 $password = $_POST['password'];
 
 if (empty($username) || empty($password)) {
-    die("All fields are required.");
+    echo json_encode(['success' => false, 'message' => 'All fields are required.']);
+    exit;
 }
 
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-// Check if user exists
-$stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$stmt->store_result();
+$query = "SELECT id FROM users WHERE username = '$username'";
+$result = mysqli_query($conn, $query);
 
-if ($stmt->num_rows > 0) {
-    die("Username or email already exists.");
+if (!$result) {
+    echo json_encode(['success' => false, 'message' => 'Query error: ' . mysqli_error($conn)]);
+    mysqli_close($conn);
+    exit;
 }
 
-$stmt->close();
+if (mysqli_num_rows($result) > 0) {
+    echo json_encode(['success' => false, 'message' => 'Username already exists.']);
+    mysqli_close($conn);
+    exit;
+}
 
-// Insert new user
-$stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-$stmt->bind_param("ss", $username, $hashedPassword);
-
-if ($stmt->execute()) {
-    echo "Registration successful. <a href='../../frontend/auth/login.html'>Login now</a>";
+$inquery = "INSERT INTO users (username, password) VALUES ('$username', '$hashedPassword')";
+if (mysqli_query($conn, $inquery)) {
+    echo json_encode(['success' => true, 'message' => 'Registration successful. You can now log in.']);
 } else {
-    echo "Error: " . $stmt->error;
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . mysqli_error($conn)]);
 }
 
-$stmt->close();
-$conn->close();
-?>
+mysqli_close($conn);

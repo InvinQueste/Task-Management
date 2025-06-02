@@ -1,112 +1,112 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>Task Dashboard</title>
-  <link rel="stylesheet" href="homeStyle.css">
-</head>
+  <head>
+    <title>Task Dashboard</title>
+    <link rel="stylesheet" href="homeStyle.css">
+  </head>
 
-<body>
-  <div id="sidebar">
-    <div class="profile">
-      <img src="profile_image.jpg" alt="User Profile" />
-      <p class="email">user@gmail.com</p>
+  <body>
+    <div id="sidebar">
+      <div class="profile">
+        <img src="profile_image.jpg" alt="User Profile" />
+        <p class="email">user@gmail.com</p>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="active">Dashboard</a></li>
+          <li><a href="#">ToDo</a></li>
+        </ul>
+      </nav>
     </div>
-    <nav>
-      <ul>
-        <li><a href="#" class="active">Dashboard</a></li>
-        <li><a href="#">ToDo</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div id="main-content">
-    <div id="notification" class="hidden"></div>
-    <button class="logout-button" onclick="logout()">Logout</button>
-    <h2>Welcome to Your Task Dashboard</h2>
+    <div id="main-content">
+      <div id="notification" class="hidden"></div>
+      <button class="logout-button" onclick="logout()">Logout</button>
+      <h2>Welcome to Your Task Dashboard</h2>
 
-    <form id="task-form">
-      <input type="text" id="title" placeholder="Task title" required />
-      <textarea id="description" placeholder="Description (optional)"></textarea>
-      <input type="date" id="due_date" />
-      <select id="priority">
-        <option value="Low">Low</option>
-        <option value="Medium" selected>Medium</option>
-        <option value="High">High</option>
-      </select>
-      <button type="submit">Add Task</button>
-    </form>
-    <h3>Filter Tasks</h3>
-    <div id="filters" style="
+      <form id="task-form">
+        <input type="text" id="title" placeholder="Task title" required />
+        <textarea id="description" placeholder="Description (optional)"></textarea>
+        <input type="date" id="due_date" />
+        <select id="priority">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+        <button type="submit">Add Task</button>
+      </form>
+      <h3>Filter Tasks</h3>
+      <div id="filters" style="
         background: #fff;
         padding: 15px;
         border-radius: 8px;
         max-width: 700px;
         margin-bottom: 20px;
       ">
-      <input type="text" id="titleSearch" placeholder="Search title " />
-      <input type="text" id="descriptionSearch" placeholder="Search description" />
+        <input type="text" id="titleSearch" placeholder="Search title " />
+        <input type="text" id="descriptionSearch" placeholder="Search description" />
 
-      <select id="priorityFilter">
-        <option value="">All Priorities</option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-      </select>
+        <select id="priorityFilter">
+          <option value="">All Priorities</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
 
-      <select id="completionFilter">
-        <option value="">All Statuses</option>
-        <option value="1">Completed</option>
-        <option value="0">Not Completed</option>
-      </select>
+        <select id="completionFilter">
+          <option value="">All Statuses</option>
+          <option value="1">Completed</option>
+          <option value="0">Not Completed</option>
+        </select>
 
-      <label>From: <input type="date" id="fromDate" /></label>
-      <label>To: <input type="date" id="toDate" /></label>
+        <label>From: <input type="date" id="fromDate" /></label>
+        <label>To: <input type="date" id="toDate" /></label>
 
-      <button onclick="resetFilters()">Reset Filters</button>
-    </div>
-    <h3>Expired Tasks</h3>
-    <table id="expired-table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+        <button onclick="resetFilters()">Reset Filters</button>
+      </div>
+      <h3>Expired Tasks</h3>
+      <table id="expired-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
-    <h3>Expiring Today</h3>
-    <table id="today-table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+      <h3>Expiring Today</h3>
+      <table id="today-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
-    <h3>Upcoming Tasks</h3>
-    <table id="upcoming-table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+      <h3>Upcoming Tasks</h3>
+      <table id="upcoming-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
-    <div id="reassign-modal" style="
+      <div id="reassign-modal" style="
   display: none;
   position: fixed;
   top: 30%;
@@ -118,165 +118,177 @@
   border-radius: 10px;
   z-index: 1000;
 ">
-      <h4>Reassign Task Due Date</h4>
-      <input type="date" id="newDueDate" />
-      <br /><br />
-      <button onclick="submitReassign()">Save</button>
-      <button onclick="closeReassignModal()">Cancel</button>
+        <h4>Reassign Task Due Date</h4>
+        <input type="date" id="newDueDate" />
+        <br /><br />
+        <button onclick="submitReassign()">Save</button>
+        <button onclick="closeReassignModal()">Cancel</button>
+      </div>
     </div>
-  </div>
 
-  <script>
-    let reassignTaskId = null;
+    <script>
+      fetch("../../backend/auth/authenticate.php")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.loggedIn) {
+            // Redirect to login page
+            window.location.href = "../../frontend/auth/login.html";
+          }
+        })
+        .catch(() => {
+          alert("Failed to check login status.");
+          window.location.href = "../../frontend/auth/login.html";
+        });
+      let reassignTaskId = null;
 
-    function openReassignModal(taskId) {
-      reassignTaskId = taskId;
-      document.getElementById("newDueDate").value = "";
-      document.getElementById("reassign-modal").style.display = "block";
-    }
-
-    function closeReassignModal() {
-      document.getElementById("reassign-modal").style.display = "none";
-    }
-
-    function submitReassign() {
-      const newDate = document.getElementById("newDueDate").value;
-      if (!newDate) {
-        alert("Please select a new due date.");
-        return;
+      function openReassignModal(taskId) {
+        reassignTaskId = taskId;
+        document.getElementById("newDueDate").value = "";
+        document.getElementById("reassign-modal").style.display = "block";
       }
 
-      fetch("../../backend/tasks/update.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: reassignTaskId,
-          due_date: newDate,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            loadTasks();
-            closeReassignModal();
-          } else {
-            alert("Failed to reassign task");
-          }
-        });
-    }
+      function closeReassignModal() {
+        document.getElementById("reassign-modal").style.display = "none";
+      }
 
-    document.addEventListener("DOMContentLoaded", loadTasks);
-    document
-      .getElementById("titleSearch")
-      .addEventListener("input", loadTasks);
-    document
-      .getElementById("descriptionSearch")
-      .addEventListener("input", loadTasks);
-    document
-      .getElementById("priorityFilter")
-      .addEventListener("change", loadTasks);
-    document
-      .getElementById("completionFilter")
-      .addEventListener("change", loadTasks);
-    document.getElementById("fromDate").addEventListener("change", loadTasks);
-    document.getElementById("toDate").addEventListener("change", loadTasks);
-    document
-      .getElementById("task-form")
-      .addEventListener("submit", function (e) {
-        e.preventDefault();
-        const title = document.getElementById("title").value;
-        const description = document.getElementById("description").value;
-        const dueDate = document.getElementById("due_date").value;
-        const priority = document.getElementById("priority").value;
+      function submitReassign() {
+        const newDate = document.getElementById("newDueDate").value;
+        if (!newDate) {
+          alert("Please select a new due date.");
+          return;
+        }
 
-        fetch("../../backend/tasks/create.php", {
+        fetch("../../backend/tasks/update.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            title,
-            description,
-            due_date: dueDate,
-            priority,
+            id: reassignTaskId,
+            due_date: newDate,
           }),
         })
           .then((res) => res.json())
           .then((data) => {
             if (data.success) {
               loadTasks();
-              document.getElementById("task-form").reset();
+              closeReassignModal();
             } else {
-              alert(data.error || "Failed to create task");
+              alert("Failed to reassign task");
             }
           });
-      });
+      }
 
-    function loadTasks() {
-      fetch("../../backend/tasks/read.php")
-        .then((res) => res.json())
-        .then((tasks) => {
-          const search2 = document
-            .getElementById("descriptionSearch")
-            .value.trim()
-            .toLowerCase();
-          const search1 = document
-            .getElementById("titleSearch")
-            .value.trim()
-            .toLowerCase();
-          const priority = document.getElementById("priorityFilter").value;
-          const completion =
-            document.getElementById("completionFilter").value;
-          const fromDate = document.getElementById("fromDate").value;
-          const toDate = document.getElementById("toDate").value;
+      document.addEventListener("DOMContentLoaded", loadTasks);
+      document
+        .getElementById("titleSearch")
+        .addEventListener("input", loadTasks);
+      document
+        .getElementById("descriptionSearch")
+        .addEventListener("input", loadTasks);
+      document
+        .getElementById("priorityFilter")
+        .addEventListener("change", loadTasks);
+      document
+        .getElementById("completionFilter")
+        .addEventListener("change", loadTasks);
+      document.getElementById("fromDate").addEventListener("change", loadTasks);
+      document.getElementById("toDate").addEventListener("change", loadTasks);
+      document
+        .getElementById("task-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const title = document.getElementById("title").value;
+          const description = document.getElementById("description").value;
+          const dueDate = document.getElementById("due_date").value;
+          const priority = document.getElementById("priority").value;
 
-          if (fromDate && toDate && fromDate > toDate) {
-            alert("From Date cannot be after To Date.");
-            return;
-          }
-
-          const today = new Date().toISOString().split("T")[0];
-          const expiredBody = document.querySelector("#expired-table tbody");
-          const todayBody = document.querySelector("#today-table tbody");
-          const upcomingBody = document.querySelector(
-            "#upcoming-table tbody"
-          );
-
-          expiredBody.innerHTML = "";
-          todayBody.innerHTML = "";
-          upcomingBody.innerHTML = "";
-
-          tasks
-            .filter((task) => {
-              if (search1) {
-                const text = (task.title || "").toLowerCase();
-                if (!text.includes(search1)) return false;
+          fetch("../../backend/tasks/create.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title,
+              description,
+              due_date: dueDate,
+              priority,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                loadTasks();
+                document.getElementById("task-form").reset();
+              } else {
+                alert(data.error || "Failed to create task");
               }
-              if (search2) {
-                const text = (task.description || "").toLowerCase();
-                if (!text.includes(search2)) return false;
-              }
+            });
+        });
 
-              if (priority && task.priority !== priority) return false;
+      function loadTasks() {
+        fetch("../../backend/tasks/read.php")
+          .then((res) => res.json())
+          .then((tasks) => {
+            const search2 = document
+              .getElementById("descriptionSearch")
+              .value.trim()
+              .toLowerCase();
+            const search1 = document
+              .getElementById("titleSearch")
+              .value.trim()
+              .toLowerCase();
+            const priority = document.getElementById("priorityFilter").value;
+            const completion =
+              document.getElementById("completionFilter").value;
+            const fromDate = document.getElementById("fromDate").value;
+            const toDate = document.getElementById("toDate").value;
 
-              if (
-                completion !== "" &&
-                String(task.is_completed) !== completion
-              )
-                return false;
+            if (fromDate && toDate && fromDate > toDate) {
+              alert("From Date cannot be after To Date.");
+              return;
+            }
 
-              if (fromDate && (!task.due_date || task.due_date < fromDate))
-                return false;
-              if (toDate && (!task.due_date || task.due_date > toDate))
-                return false;
+            const today = new Date().toISOString().split("T")[0];
+            const expiredBody = document.querySelector("#expired-table tbody");
+            const todayBody = document.querySelector("#today-table tbody");
+            const upcomingBody = document.querySelector(
+              "#upcoming-table tbody"
+            );
 
-              return true;
-            })
-            .forEach((task) => {
-              const dueDate = task.due_date;
-              const row = document.createElement("tr");
-              if (task.is_completed === "1" || task.is_completed === 1)
-                row.classList.add("completed");
+            expiredBody.innerHTML = "";
+            todayBody.innerHTML = "";
+            upcomingBody.innerHTML = "";
 
-              row.innerHTML = `
+            tasks
+              .filter((task) => {
+                if (search1) {
+                  const text = (task.title || "").toLowerCase();
+                  if (!text.includes(search1)) return false;
+                }
+                if (search2) {
+                  const text = (task.description || "").toLowerCase();
+                  if (!text.includes(search2)) return false;
+                }
+
+                if (priority && task.priority !== priority) return false;
+
+                if (
+                  completion !== "" &&
+                  String(task.is_completed) !== completion
+                )
+                  return false;
+
+                if (fromDate && (!task.due_date || task.due_date < fromDate))
+                  return false;
+                if (toDate && (!task.due_date || task.due_date > toDate))
+                  return false;
+
+                return true;
+              })
+              .forEach((task) => {
+                const dueDate = task.due_date;
+                const row = document.createElement("tr");
+                if (task.is_completed === "1" || task.is_completed === 1)
+                  row.classList.add("completed");
+
+                row.innerHTML = `
   <td>${task.title}</td>
   <td>${task.description || "-"}</td>
   <td>${dueDate || "-"}</td>
@@ -287,93 +299,93 @@
     </button>
     <button onclick="deleteTask(${task.id})">Delete</button>
     ${dueDate && dueDate < today
-                  ? `<button onclick="openReassignModal(${task.id})">Reassign</button>`
-                  : ""
-                }
+                    ? `<button onclick="openReassignModal(${task.id})">Reassign</button>`
+                    : ""
+                  }
   </td>
 `;
 
-              if (!dueDate) {
-                upcomingBody.appendChild(row);
-              } else if (dueDate < today) {
-                expiredBody.appendChild(row);
-              } else if (dueDate === today) {
-                todayBody.appendChild(row);
-              } else {
-                upcomingBody.appendChild(row);
-              }
-            });
-        });
-    }
-    function resetFilters() {
-      document.getElementById("titleSearch").value = "";
-      document.getElementById("descriptionSearch").value = "";
-      document.getElementById("priorityFilter").value = "";
-      document.getElementById("completionFilter").value = "";
-      document.getElementById("fromDate").value = "";
-      document.getElementById("toDate").value = "";
-      loadTasks();
-    }
+                if (!dueDate) {
+                  upcomingBody.appendChild(row);
+                } else if (dueDate < today) {
+                  expiredBody.appendChild(row);
+                } else if (dueDate === today) {
+                  todayBody.appendChild(row);
+                } else {
+                  upcomingBody.appendChild(row);
+                }
+              });
+          });
+      }
+      function resetFilters() {
+        document.getElementById("titleSearch").value = "";
+        document.getElementById("descriptionSearch").value = "";
+        document.getElementById("priorityFilter").value = "";
+        document.getElementById("completionFilter").value = "";
+        document.getElementById("fromDate").value = "";
+        document.getElementById("toDate").value = "";
+        loadTasks();
+      }
 
-    function toggleComplete(id, currentStatus) {
-      fetch("../../backend/tasks/update.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id,
-          is_completed: currentStatus ? 0 : 1,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            loadTasks();
-            showNotification("Task updated successfully!", "success");
-          }
-          else showNotification("Failed to update status");
-        });
-    }
-
-    function deleteTask(id) {
-      if (confirm("Are you sure you want to delete this task?")) {
-        fetch("../../backend/tasks/delete.php", {
+      function toggleComplete(id, currentStatus) {
+        fetch("../../backend/tasks/update.php", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id }),
+          body: JSON.stringify({
+            id,
+            is_completed: currentStatus ? 0 : 1,
+          }),
         })
           .then((res) => res.json())
           .then((data) => {
             if (data.success) {
               loadTasks();
-              showNotification("Task deleted successfully!", "success");
+              showNotification("Task updated successfully!", "success");
             }
-            else showNotification("Failed to delete task", "error");
+            else showNotification("Failed to update status");
           });
       }
-    }
 
-    function logout() {
-      fetch("../../backend/auth/logout.php").then(
-        () => (location.href = "../../frontend/auth/login.html")
-      );
-    }
+      function deleteTask(id) {
+        if (confirm("Are you sure you want to delete this task?")) {
+          fetch("../../backend/tasks/delete.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                loadTasks();
+                showNotification("Task deleted successfully!", "success");
+              }
+              else showNotification("Failed to delete task", "error");
+            });
+        }
+      }
 
-    function showNotification(message, type = "success") {
-      const notif = document.getElementById("notification");
-      notif.className = `show ${type}`;
-      notif.textContent = message;
+      function logout() {
+        fetch("../../backend/auth/logout.php").then(
+          () => (location.href = "../../frontend/auth/login.html")
+        );
+      }
 
-      setTimeout(() => {
-        notif.className = notif.className.replace("show", "");
+      function showNotification(message, type = "success") {
+        const notif = document.getElementById("notification");
+        notif.className = `show ${type}`;
+        notif.textContent = message;
+
         setTimeout(() => {
-          notif.style.display = "none";
-        }, 400);
-      }, 2500);
+          notif.className = notif.className.replace("show", "");
+          setTimeout(() => {
+            notif.style.display = "none";
+          }, 400);
+        }, 2500);
 
-      notif.style.display = "block";
-    }
+        notif.style.display = "block";
+      }
 
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>

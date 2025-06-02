@@ -21,15 +21,13 @@ $due_date = $data['due_date'] ?? null;
 $priority = $data['priority'] ?? "Medium";
 $user_id = $_SESSION['user_id'];
 
-$stmt = $conn->prepare("INSERT INTO tasks (user_id, title, description, due_date, priority) VALUES (?, ?, ?, ?, ?)");
-$stmt->bind_param("issss", $user_id, $title, $description, $due_date, $priority);
+$query = "INSERT INTO tasks (user_id, title, description, due_date, priority)
+      VALUES ('$user_id', '$title', '$description', '$due_date', '$priority')";
 
-if ($stmt->execute()) {
-  echo json_encode(["success" => true]);
+if (!mysqli_query($conn, $query)) {
+  echo json_encode(["success" => false, "error" => mysqli_error($conn)]);
 } else {
-  echo json_encode(["success" => false, "error" => $stmt->error]);
+  echo json_encode(["success" => true]);
 }
 
-$stmt->close();
-$conn->close();
-?>
+mysqli_close($conn);

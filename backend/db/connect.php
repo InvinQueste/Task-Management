@@ -1,14 +1,13 @@
 <?php
 
-$host="localhost";
-$user="root";
-$pass="";
-$db="task_management";
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "task_management";
 
-$conn=new mysqli($host,$user,$pass,$db);
+$conn = mysqli_connect($host, $user, $pass, $db);
 
-if($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
+if (!$conn) {
+    error_log("Database connection failed: " . mysqli_connect_error());
     die("Database connection failed. Please try again later.");
 }
-?>

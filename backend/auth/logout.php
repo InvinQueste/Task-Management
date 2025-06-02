@@ -1,13 +1,6 @@
 <?php
 session_start();
-
-
 $_SESSION = [];
-
-
 session_destroy();
-
-
-header("Location: ../../fronend/auth/login.html");
+header("Location: ../../frontend/auth/login.html");
 exit;
-?>
