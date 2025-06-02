@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <title>Task Dashboard</title>
-    <link rel="stylesheet" href="homeStyle.css">
+    <link rel="stylesheet" href="homeStyle.css" />
   </head>
 
   <body>
@@ -26,7 +25,10 @@
 
       <form id="task-form">
         <input type="text" id="title" placeholder="Task title" required />
-        <textarea id="description" placeholder="Description (optional)"></textarea>
+        <textarea
+          id="description"
+          placeholder="Description (optional)"
+        ></textarea>
         <input type="date" id="due_date" />
         <select id="priority">
           <option value="Low">Low</option>
@@ -36,15 +38,22 @@
         <button type="submit">Add Task</button>
       </form>
       <h3>Filter Tasks</h3>
-      <div id="filters" style="
-        background: #fff;
-        padding: 15px;
-        border-radius: 8px;
-        max-width: 700px;
-        margin-bottom: 20px;
-      ">
+      <div
+        id="filters"
+        style="
+          background: #fff;
+          padding: 15px;
+          border-radius: 8px;
+          max-width: 700px;
+          margin-bottom: 20px;
+        "
+      >
         <input type="text" id="titleSearch" placeholder="Search title " />
-        <input type="text" id="descriptionSearch" placeholder="Search description" />
+        <input
+          type="text"
+          id="descriptionSearch"
+          placeholder="Search description"
+        />
 
         <select id="priorityFilter">
           <option value="">All Priorities</option>
@@ -106,18 +115,21 @@
         <tbody></tbody>
       </table>
 
-      <div id="reassign-modal" style="
-  display: none;
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  z-index: 1000;
-">
+      <div
+        id="reassign-modal"
+        style="
+          display: none;
+          position: fixed;
+          top: 30%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: white;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 10px;
+          z-index: 1000;
+        "
+      >
         <h4>Reassign Task Due Date</h4>
         <input type="date" id="newDueDate" />
         <br /><br />
@@ -128,8 +140,8 @@
 
     <script>
       fetch("../../backend/auth/authenticate.php")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (!data.loggedIn) {
             // Redirect to login page
             window.location.href = "../../frontend/auth/login.html";
@@ -245,7 +257,13 @@
               return;
             }
 
-            const today = new Date().toISOString().split("T")[0];
+            const now = new Date();
+            const today =
+              now.getFullYear() +
+              "-" +
+              String(now.getMonth() + 1).padStart(2, "0") +
+              "-" +
+              String(now.getDate()).padStart(2, "0");
             const expiredBody = document.querySelector("#expired-table tbody");
             const todayBody = document.querySelector("#today-table tbody");
             const upcomingBody = document.querySelector(
@@ -298,10 +316,11 @@
       ${task.is_completed == 1 ? "Undo" : "Complete"}
     </button>
     <button onclick="deleteTask(${task.id})">Delete</button>
-    ${dueDate && dueDate < today
-                    ? `<button onclick="openReassignModal(${task.id})">Reassign</button>`
-                    : ""
-                  }
+    ${
+      dueDate && dueDate < today
+        ? `<button onclick="openReassignModal(${task.id})">Reassign</button>`
+        : ""
+    }
   </td>
 `;
 
@@ -341,8 +360,7 @@
             if (data.success) {
               loadTasks();
               showNotification("Task updated successfully!", "success");
-            }
-            else showNotification("Failed to update status");
+            } else showNotification("Failed to update status");
           });
       }
 
@@ -358,8 +376,7 @@
               if (data.success) {
                 loadTasks();
                 showNotification("Task deleted successfully!", "success");
-              }
-              else showNotification("Failed to delete task", "error");
+              } else showNotification("Failed to delete task", "error");
             });
         }
       }
@@ -384,8 +401,6 @@
 
         notif.style.display = "block";
       }
-
     </script>
   </body>
-
 </html>
