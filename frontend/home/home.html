@@ -14,9 +14,36 @@
       <nav>
         <ul>
           <li><a href="#" class="active">Dashboard</a></li>
-          <li><a href="#">ToDo</a></li>
+          <li><a href="#" style="
+            color: red;
+          ">Logout</a></li>
         </ul>
       </nav>
+      <div>
+        <h3>
+          Overview
+        </h3>
+        <table id="overview-table">
+            <th style="width: 70%;">Category</th>
+            <th style="width: 30%;">#</th>
+          </tr>
+          <tr>
+            <td>Expired Tasks</td>
+            <td id="overview-expired">0</td>
+          </tr>
+          <tr>
+            <td>Expiring Today</td>
+            <td id="overview-today">0</td>
+          </tr>
+          <tr>
+            <td>Upcoming Tasks</td>
+            <td id="overview-upcoming">0</td>
+          </tr>
+        </table>
+      </div>
+      <div style="margin-top: auto;">
+        <p>&copy; 2023 Task Manager</p>
+      </div>
     </div>
     <div id="main-content">
       <div id="notification" class="hidden"></div>
@@ -92,12 +119,6 @@
           <textarea
             id="modal-description"
             placeholder="Description (optional)"
-            style="
-              resize: vertical;
-              height: 80px;
-              min-height: 50px;
-              max-height: 120px;
-            "
           ></textarea>
           <input type="date" id="modal-due_date" />
           <select id="modal-priority">
@@ -366,6 +387,8 @@
           if (!data.loggedIn) {
             // Redirect to login page
             window.location.href = "../../frontend/auth/login.html";
+          } else {
+            document.querySelector(".email").textContent = data.username;
           }
         })
         .catch(() => {
@@ -574,6 +597,11 @@
               });
             }
 
+            
+            var expiredTaskCount = 0;
+            var todayTaskCount = 0;
+            var upcomingTaskCount = 0;
+
             tasks
               .filter((task) => {
                 if (search1) {
@@ -607,72 +635,80 @@
                   row.classList.add("completed");
 
                 row.innerHTML = `
-  <td title="${task.title}">${task.title}</td>
-  <td title="${task.description || "-"}">${task.description || "-"}</td>
-  <td
-  style="${
-    task.is_completed === "0"
-      ? dueDate && dueDate < today
-        ? "color:#e53935;font-weight:bold;"
-        : dueDate === today
-        ? "color:#ff9800;font-weight:bold;"
-        : ""
-      : ""
-  }"
->
-  ${dueDate || "-"}
-</td>
-  <td>
-    <span class="taskpriority ${task.priority.toLowerCase()}">
-      ${task.priority}
-    </span>
-  </td>
-  <td style="text-align:center;">
-    <div class="task-menu-container" style="display:inline-block; position:relative;">
-      <button class="task-menu-btn" onclick="toggleTaskMenu(event, ${
-        task.id
-      })" style="background:none; border:none; cursor:pointer; padding:0 6px;">
-        <span style="font-size:22px; line-height:1; color:#222">&#8942;</span>
-      </button>
-      <div class="task-menu-dropdown" id="task-menu-${
-        task.id
-      }" style="display:none; position:fixed; z-index:9999; min-width:140px;">
-        <div
-          onclick="toggleComplete(${task.id}, ${
-                  task.is_completed
-                }); closeAllTaskMenus();"
-          class="task-menu-action"
-          style="color: ${task.is_completed == 1 ? "#ff3e17" : "#0d9c00"};"
-        >
-          ${task.is_completed == 1 ? "Undo Complete" : "Mark Complete"}
-        </div>
-        <div onclick="deleteTask(${
-          task.id
-        }); closeAllTaskMenus();" class="task-menu-action" style="color:#e74c3c;">
-          Delete
-        </div>
-        ${
-          dueDate && dueDate < today
-            ? `<div onclick="openReassignModal(${task.id}); closeAllTaskMenus();" class="task-menu-action" style="color:#77c206;">
-                Reassign
-              </div>`
-            : ""
-        }
-      </div>
-    </div>
-  </td>
-`;
+                  <td title="${task.title}">${task.title}</td>
+                  <td title="${task.description || "-"}">${task.description || "-"}</td>
+                  <td
+                    style="${
+                      task.is_completed === "0"
+                        ? dueDate && dueDate < today
+                          ? "color:#e53935;font-weight:bold;"
+                          : dueDate === today
+                          ? "color:#ff9800;font-weight:bold;"
+                          : ""
+                        : ""
+                      }"
+                  >
+                    ${dueDate || "-"}
+                  </td>
+                    <td>
+                      <span class="taskpriority ${task.priority.toLowerCase()}">
+                        ${task.priority}
+                      </span>
+                    </td>
+                    <td style="text-align:center;">
+                      <div class="task-menu-container" style="display:inline-block; position:relative;">
+                        <button class="task-menu-btn" onclick="toggleTaskMenu(event, ${
+                          task.id
+                        })" style="background:none; border:none; cursor:pointer; padding:0 6px;">
+                          <span style="font-size:22px; line-height:1; color:#222">&#8942;</span>
+                        </button>
+                        <div class="task-menu-dropdown" id="task-menu-${
+                          task.id
+                        }" style="display:none; position:fixed; z-index:9999; min-width:140px;">
+                          <div
+                            onclick="toggleComplete(${task.id}, ${
+                                    task.is_completed
+                                  }); closeAllTaskMenus();"
+                            class="task-menu-action"
+                            style="color: ${task.is_completed == 1 ? "#ff3e17" : "#0d9c00"};"
+                          >
+                            ${task.is_completed == 1 ? "Undo Complete" : "Mark Complete"}
+                          </div>
+                          <div onclick="deleteTask(${
+                            task.id
+                          }); closeAllTaskMenus();" class="task-menu-action" style="color:#e74c3c;">
+                            Delete
+                          </div>
+                          ${
+                            dueDate && dueDate < today
+                              ? `<div onclick="openReassignModal(${task.id}); closeAllTaskMenus();" class="task-menu-action" style="color:#77c206;">
+                                  Reassign
+                                </div>`
+                              : ""
+                          }
+                        </div>
+                      </div>
+                    </td>
+                  `;
 
                 if (!dueDate) {
+                  upcomingTaskCount++;
                   upcomingBody.appendChild(row);
                 } else if (dueDate < today) {
+                  expiredTaskCount++;
                   expiredBody.appendChild(row);
                 } else if (dueDate === today) {
+                  todayTaskCount++;
                   todayBody.appendChild(row);
                 } else {
+                  upcomingTaskCount++;
                   upcomingBody.appendChild(row);
                 }
               });
+              
+            document.getElementById("overview-expired").textContent = expiredTaskCount;
+            document.getElementById("overview-today").textContent = todayTaskCount;
+            document.getElementById("overview-upcoming").textContent = upcomingTaskCount;
           });
       }
       function resetFilters() {
