@@ -495,7 +495,19 @@
                 row.innerHTML = `
   <td title="${task.title}">${task.title}</td>
   <td title="${task.description || "-"}">${task.description || "-"}</td>
-  <td>${dueDate || "-"}</td>
+  <td
+  style="${
+    task.is_completed === "0"
+      ? dueDate && dueDate < today
+        ? "color:#e53935;font-weight:bold;"
+        : dueDate === today
+        ? "color:#ff9800;font-weight:bold;"
+        : ""
+      : ""
+  }"
+>
+  ${dueDate || "-"}
+</td>
   <td>
     <span class="taskpriority ${task.priority.toLowerCase()}">
       ${task.priority}
