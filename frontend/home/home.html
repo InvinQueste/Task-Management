@@ -95,7 +95,16 @@
         <h3>Add Task</h3>
         <form id="modal-task-form">
           <input type="text" id="modal-title" placeholder="Task title" required />
-          <textarea id="modal-description" placeholder="Description (optional)"></textarea>
+          <textarea
+            id="modal-description"
+            placeholder="Description (optional)"
+            style="
+              resize: vertical;
+              height: 80px;
+              min-height: 50px;
+              max-height: 120px;
+            "
+          ></textarea>
           <input type="date" id="modal-due_date" />
           <select id="modal-priority">
             <option value="Low">Low</option>
