@@ -640,21 +640,21 @@
                 }
               });
               if(expiredBody.children.length === 0 ) {
-                if(allFiltersUnset) expiredBody.innerHTML = "<tr><td colspan='5'>No expired tasks</td></tr>";
+                if(allFiltersUnset) expiredBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No expired tasks</td></tr>";
                 else {
-                  expiredBody.innerHTML = "<tr><td colspan='5'>No tasks matching filters</td></tr>";
+                  expiredBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
                 }
               }
               if(todayBody.children.length === 0) {
-               if(allFiltersUnset) todayBody.innerHTML = "<tr><td colspan='5'>No tasks expiring today</td></tr>";
+               if(allFiltersUnset) todayBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks expiring today</td></tr>";
                 else {
-                  todayBody.innerHTML = "<tr><td colspan='5'>No tasks matching filters</td></tr>";
+                  todayBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
                 }
               }
               if(upcomingBody.children.length === 0) {
-                if(allFiltersUnset) upcomingBody.innerHTML = "<tr><td colspan='5'>No upcoming tasks</td></tr>";
+                if(allFiltersUnset) upcomingBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No upcoming tasks</td></tr>";
                 else {
-                  upcomingBody.innerHTML = "<tr><td colspan='5'>No tasks matching filters</td></tr>";
+                  upcomingBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
                 }
               }
             document.getElementById("overview-expired").textContent = expiredTaskCount;
