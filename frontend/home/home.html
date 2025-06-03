@@ -23,10 +23,7 @@
       <button class="logout-button" onclick="logout()">Logout</button>
       <h2>Welcome to Your Task Dashboard</h2>
 
-      <div style="display: flex; gap: 12px; margin-bottom: 20px">
-        <button id="open-add-task-modal">Add Task</button>
-        <button id="open-sort-modal">Sort Tasks</button>
-      </div>
+      <button id="open-add-task-modal">Add Task</button>
 
       <div id="add-task-modal" class="main-popup">
         <h3>Add Task</h3>
@@ -108,12 +105,12 @@
           </label>
         </div>
 
-        <div style="display: flex; gap: 10px; align-items: center; width: 100%">
+        <div style="display: flex; gap: 4px; align-items: center; width: 100%">
           <input
             type="text"
             id="titleSearch"
             placeholder="Title"
-            style="width: 35%; min-width: 80px"
+            style="width: 30%; min-width: 80px"
           />
           <input
             type="text"
@@ -121,22 +118,48 @@
             placeholder="Description"
             style="width: 35%; min-width: 80px"
           />
-          <select id="priorityFilter" style="width: 12%; min-width: 70px">
+          <select id="priorityFilter" style="width: 13%; min-width: 70px">
             <option value="">All Priorities</option>
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
           </select>
-          <select id="completionFilter" style="width: 12%; min-width: 70px">
+          <select id="completionFilter" style="width: 13%; min-width: 70px">
             <option value="">All Statuses</option>
             <option value="1">Completed</option>
             <option value="0">Not Completed</option>
           </select>
           <button
+            id="reset-filters"
+            title="Reset Filters"
             onclick="resetFilters()"
             style="
-              width: 6%;
-              min-width: 60px;
+              width: 5%;
+              min-width: 22px;
+              max-width: 25px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0;
+              background: none;
+              border: none;
+              cursor: pointer;
+              margin-left: auto;
+            "
+          >
+            <img
+              src="../assets/funnel-x.svg"
+              alt="Reset Filters"
+              style="width: 22px; height: 22px"
+            />
+          </button>
+          <button
+            id="open-sort-modal"
+            title="Sort Tasks"
+            style="
+              width: 5%;
+              min-width: 22px;
+              max-width: 25px;
               display: flex;
               align-items: center;
               justify-content: center;
@@ -147,8 +170,8 @@
             "
           >
             <img
-              src="../assets/funnel-x.svg"
-              alt="Reset Filters"
+              src="../assets/arrow-down-up.svg"
+              alt="Sort Tasks"
               style="width: 22px; height: 22px"
             />
           </button>

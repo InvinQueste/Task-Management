@@ -374,7 +374,12 @@ td:last-child {
   }
 }
 
-#filters button:hover img {
+#reset-filters:hover img {
   filter: brightness(0) saturate(100%) invert(24%) sepia(99%) saturate(7492%)
     hue-rotate(357deg) brightness(97%) contrast(119%);
+}
+
+#open-sort-modal:hover img {
+  filter: brightness(0) saturate(100%) invert(56%) sepia(94%) saturate(748%)
+    hue-rotate(74deg) brightness(97%) contrast(119%);
 }
