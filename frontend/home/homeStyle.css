@@ -23,16 +23,6 @@ h3 {
   margin: 20px 0 10px;
 }
 
-/* Form styles */
-#task-form,
-#filters {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-bottom: 30px;
-}
-
 input,
 select,
 textarea {
@@ -285,6 +275,33 @@ tr:hover {
   justify-content: center;
 }
 
+/* Task priority badges */
+.taskpriority {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  min-width: 60px;
+  text-align: center;
+  user-select: none;
+  pointer-events: none;
+  margin: 0 2px;
+}
+
+.taskpriority.high {
+  background: #e74c3c;
+}
+
+.taskpriority.medium {
+  background: #f1c40f;
+}
+
+.taskpriority.low {
+  background: #27ae60;
+}
+
 /* Responsive: hide sidebar on small screens */
 @media (max-width: 768px) {
   #sidebar {
@@ -314,4 +331,9 @@ tr:hover {
     margin-left: 0;
     padding: 20px;
   }
+}
+
+#filters button:hover img {
+  filter: brightness(0) saturate(100%) invert(24%) sepia(99%) saturate(7492%)
+    hue-rotate(357deg) brightness(97%) contrast(119%);
 }

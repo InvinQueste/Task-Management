@@ -8,7 +8,7 @@
   <body>
     <div id="sidebar">
       <div class="profile">
-        <img src="profile_image.jpg" alt="User Profile" />
+        <img src="../assets/profile_image.jpg" alt="User Profile" />
         <p class="email">user@gmail.com</p>
       </div>
       <nav>
@@ -53,18 +53,7 @@
         </form>
       </div>
 
-      <div
-        id="filters"
-        style="
-          background: #fff;
-          padding: 15px;
-          border-radius: 8px;
-          width: 100%;
-          max-width: none;
-          margin-bottom: 20px;
-        "
-      >
-        <!-- Date filters row -->
+      <div id="filters" style="width: 100%; max-width: none">
         <div
           style="
             display: flex;
@@ -80,7 +69,7 @@
             To: <input type="date" id="toDate" />
           </label>
         </div>
-        <!-- Searchbars, dropdowns, and reset button row -->
+
         <div style="display: flex; gap: 10px; align-items: center; width: 100%">
           <input
             type="text"
@@ -105,8 +94,25 @@
             <option value="1">Completed</option>
             <option value="0">Not Completed</option>
           </select>
-          <button onclick="resetFilters()" style="width: 6%; min-width: 60px">
-            Reset
+          <button
+            onclick="resetFilters()"
+            style="
+              width: 6%;
+              min-width: 60px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0;
+              background: none;
+              border: none;
+              cursor: pointer;
+            "
+          >
+            <img
+              src="../assets/funnel-x.svg"
+              alt="Reset Filters"
+              style="width: 22px; height: 22px"
+            />
           </button>
         </div>
       </div>
@@ -441,7 +447,11 @@
   <td>${task.title}</td>
   <td>${task.description || "-"}</td>
   <td>${dueDate || "-"}</td>
-  <td>${task.priority}</td>
+  <td>
+    <span class="taskpriority ${task.priority.toLowerCase()}">
+      ${task.priority}
+    </span>
+  </td>
   <td>
     <button onclick="toggleComplete(${task.id}, ${task.is_completed})">
       ${task.is_completed == 1 ? "Undo" : "Complete"}
