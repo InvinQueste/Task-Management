@@ -526,7 +526,13 @@
             var expiredTaskCount = 0;
             var todayTaskCount = 0;
             var upcomingTaskCount = 0;
-
+            const allFiltersUnset =
+  !document.getElementById("titleSearch").value.trim() &&
+  !document.getElementById("descriptionSearch").value.trim() &&
+  !document.getElementById("priorityFilter").value &&
+  !document.getElementById("completionFilter").value &&
+  !document.getElementById("fromDate").value &&
+  !document.getElementById("toDate").value;
             tasks
               .filter((task) => {
                 if (search1) {
@@ -624,7 +630,24 @@
                   upcomingBody.appendChild(row);
                 }
               });
-
+              if(expiredBody.children.length === 0 ) {
+                if(allFiltersUnset) expiredBody.innerHTML = "<tr><td colspan='5'>No expired tasks</td></tr>";
+                else {
+                  expiredBody.innerHTML = "<tr><td colspan='5'>No tasks matching filters</td></tr>";
+                }
+              }
+              if(todayBody.children.length === 0) {
+               if(allFiltersUnset) todayBody.innerHTML = "<tr><td colspan='5'>No tasks expiring today</td></tr>";
+                else {
+                  todayBody.innerHTML = "<tr><td colspan='5'>No tasks matching filters</td></tr>";
+                }
+              }
+              if(upcomingBody.children.length === 0) {
+                if(allFiltersUnset) upcomingBody.innerHTML = "<tr><td colspan='5'>No upcoming tasks</td></tr>";
+                else {
+                  upcomingBody.innerHTML = "<tr><td colspan='5'>No tasks matching filters</td></tr>";
+                }
+              }
             document.getElementById("overview-expired").textContent = expiredTaskCount;
             document.getElementById("overview-today").textContent = todayTaskCount;
             document.getElementById("overview-upcoming").textContent = upcomingTaskCount;
