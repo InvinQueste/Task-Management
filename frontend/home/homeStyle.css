@@ -383,3 +383,18 @@ td:last-child {
   filter: brightness(0) saturate(100%) invert(56%) sepia(94%) saturate(748%)
     hue-rotate(74deg) brightness(97%) contrast(119%);
 }
+
+#open-add-task-modal {
+  background: linear-gradient(135deg, #27a168 0%, #38d89b 100%) !important;
+  transition: background 0.2s, transform 0.2s;
+}
+
+#open-add-task-modal:hover {
+  background: linear-gradient(135deg, #4ad996 0%, #7fffd4 100%) !important;
+  transform: scale(1.2);
+}
+
+#open-add-task-modal:active {
+  background: linear-gradient(135deg, #1e7e53 0%, #27a168 100%) !important;
+  transform: scale(0.9);
+}
