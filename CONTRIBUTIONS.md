@@ -6,6 +6,7 @@
 
 - Advanced Home Frontend Design
 - Testing
+- Documentation
 - Co-ordination
 - Bug Fixes
 - Edge Case Removal
@@ -16,7 +17,6 @@
 
 - CRUD Operations
 - Testing
-- Documentation
 - Sample SQL
 - Authentication Functionality
 - Routing and Redirection
