@@ -116,6 +116,44 @@
           </button>
         </div>
       </div>
+
+      <div
+        id="sort-options"
+        style="
+          background: #fff;
+          padding: 15px;
+          border-radius: 8px;
+          max-width: 700px;
+          margin-bottom: 20px;
+        "
+      >
+        <label for="global-sort">Sort By: </label>
+        <select id="global-sort">
+          <option value="">-- No Sort --</option>
+
+          <optgroup label="Title">
+            <option value="title|asc">A to Z</option>
+            <option value="title|desc">Z to A</option>
+          </optgroup>
+
+          <optgroup label="Description">
+            <option value="description|asc">A to Z</option>
+            <option value="description|desc">Z to A</option>
+          </optgroup>
+
+          <optgroup label="Priority">
+            <option value="priority|high">High to Low</option>
+            <option value="priority|low">Low to High</option>
+          </optgroup>
+
+          <optgroup label="Due Date">
+            <option value="due_date|asc">Earliest First</option>
+            <option value="due_date|desc">Latest First</option>
+          </optgroup>
+        </select>
+        <button onclick="resetsorts()">Reset Sorting</button>
+      </div>
+
       <h3>Expired Tasks</h3>
       <table id="expired-table">
         <thead>
@@ -277,6 +315,10 @@
       document.getElementById("fromDate").addEventListener("change", loadTasks);
       document.getElementById("toDate").addEventListener("change", loadTasks);
 
+      document
+        .getElementById("global-sort")
+        .addEventListener("change", loadTasks);
+
       const addTaskModal = document.getElementById("add-task-modal");
       const openAddTaskBtn = document.getElementById("open-add-task-modal");
       const modalTaskForm = document.getElementById("modal-task-form");
@@ -385,6 +427,7 @@
               document.getElementById("completionFilter").value;
             const fromDate = document.getElementById("fromDate").value;
             const toDate = document.getElementById("toDate").value;
+            const sortValue = document.getElementById("global-sort").value;
 
             if (fromDate && toDate && fromDate > toDate) {
               alert("From Date cannot be after To Date.");
@@ -407,6 +450,41 @@
             expiredBody.innerHTML = "";
             todayBody.innerHTML = "";
             upcomingBody.innerHTML = "";
+
+            if (sortValue) {
+              const [field, order] = sortValue.split("|");
+              tasks.sort((a, b) => {
+                let valA = a[field] || "";
+                let valB = b[field] || "";
+
+                let result = 0;
+
+                if (field === "priority") {
+                  const priorityMap = { High: 3, Medium: 2, Low: 1 };
+                  valA = priorityMap[a.priority] || 0;
+                  valB = priorityMap[b.priority] || 0;
+                  result = order === "high" ? valB - valA : valA - valB;
+                } else if (field === "due_date") {
+                  result =
+                    order === "asc"
+                      ? valA.localeCompare(valB)
+                      : valB.localeCompare(valA);
+                } else if (
+                  typeof valA === "string" &&
+                  typeof valB === "string"
+                ) {
+                  result =
+                    order === "asc"
+                      ? valA.localeCompare(valB)
+                      : valB.localeCompare(valA);
+                }
+
+                if (result === 0) {
+                  return a.created_at.localeCompare(b.created_at);
+                }
+                return result;
+              });
+            }
 
             tasks
               .filter((task) => {
@@ -498,6 +576,11 @@
         document.getElementById("completionFilter").value = "";
         document.getElementById("fromDate").value = "";
         document.getElementById("toDate").value = "";
+        loadTasks();
+      }
+
+      function resetsorts() {
+        document.getElementById("global-sort").value = "";
         loadTasks();
       }
 
