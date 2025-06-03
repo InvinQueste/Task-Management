@@ -493,8 +493,8 @@
                   row.classList.add("completed");
 
                 row.innerHTML = `
-  <td>${task.title}</td>
-  <td>${task.description || "-"}</td>
+  <td title="${task.title}">${task.title}</td>
+  <td title="${task.description || "-"}">${task.description || "-"}</td>
   <td>${dueDate || "-"}</td>
   <td>
     <span class="taskpriority ${task.priority.toLowerCase()}">
