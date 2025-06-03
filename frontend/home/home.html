@@ -8,116 +8,261 @@
   <body>
     <div id="sidebar">
       <div class="profile">
-        <img src="profile_image.jpg" alt="User Profile" />
+        <img src="../assets/profile_image.jpg" alt="User Profile" />
         <p class="email">user@gmail.com</p>
       </div>
       <nav>
         <ul>
           <li><a href="#" class="active">Dashboard</a></li>
-          <li><a href="#">ToDo</a></li>
+          <li>
+            <a onclick="logout()" style="color: red; cursor: pointer;">Logout</a>
+          </li>
         </ul>
       </nav>
+      <div>
+        <h3>
+          Overview
+        </h3>
+        <table id="overview-table">
+          <th style="width: 70%;">Category</th>
+          <th style="width: 30%;">#</th>
+          </tr>
+          <tr>
+            <td>Upcoming Tasks</td>
+            <td id="overview-upcoming">0</td>
+          </tr>
+          
+          <tr>
+            <td>Expiring Today</td>
+            <td id="overview-today">0</td>
+          </tr>
+          <tr>
+            <td>Expired Tasks</td>
+            <td id="overview-expired">0</td>
+          </tr>
+        </table>
+      </div>
+      <div style="margin-top: auto;">
+        <p>&copy; 2025 Task Manager</p>
+      </div>
     </div>
     <div id="main-content">
       <div id="notification" class="hidden"></div>
-      <button class="logout-button" onclick="logout()">Logout</button>
       <h2>Welcome to Your Task Dashboard</h2>
 
-      <form id="task-form">
-        <input type="text" id="title" placeholder="Task title" required />
-        <textarea
-          id="description"
-          placeholder="Description (optional)"
-        ></textarea>
-        <input type="date" id="due_date" />
-        <select id="priority">
-          <option value="Low">Low</option>
-          <option value="Medium" selected>Medium</option>
-          <option value="High">High</option>
-        </select>
-        <button type="submit">Add Task</button>
-      </form>
-      <h3>Filter Tasks</h3>
-      <div
-        id="filters"
-        style="
-          background: #fff;
-          padding: 15px;
-          border-radius: 8px;
-          max-width: 700px;
-          margin-bottom: 20px;
-        "
-      >
-        <input type="text" id="titleSearch" placeholder="Search title " />
-        <input
-          type="text"
-          id="descriptionSearch"
-          placeholder="Search description"
-        />
-
-        <select id="priorityFilter">
-          <option value="">All Priorities</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
-
-        <select id="completionFilter">
-          <option value="">All Statuses</option>
-          <option value="1">Completed</option>
-          <option value="0">Not Completed</option>
-        </select>
-
-        <label>From: <input type="date" id="fromDate" /></label>
-        <label>To: <input type="date" id="toDate" /></label>
-
-        <button onclick="resetFilters()">Reset Filters</button>
+      <div style="display: flex; justify-content: center">
+        <button id="open-add-task-modal" style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 28px;
+            padding: 44px 60px 28px 60px;
+            margin: 28px 0 40px 0;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(23, 189, 120, 0.9);
+            transition: background 0.2s;
+          ">
+          <img src="../assets/plus.svg" alt="Add" style="
+              width: 72px;
+              height: 72px;
+              margin-bottom: 18px;
+              filter: brightness(0) invert(1);
+            " />
+          <span style="
+              color: #fff;
+              font-size: 28px;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+              margin-bottom: 10px;
+              text-align: center;
+              display: block;
+            ">Add Task</span>
+        </button>
       </div>
-      <h3>Expired Tasks</h3>
-      <table id="expired-table">
+
+      <div id="add-task-modal" class="main-popup">
+        <img src="../assets/x.svg" alt="Close" onclick="closeAddTaskModal()" style="
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
+              saturate(7492%) hue-rotate(357deg) brightness(97%) contrast(119%);
+          " />
+        <h3>Add Task</h3>
+        <form id="modal-task-form">
+          <input type="text" id="modal-title" placeholder="Task title" required />
+          <textarea
+            id="modal-description"
+            placeholder="Description (optional)"
+            style="
+              resize: vertical;
+              height: 80px;
+              min-height: 50px;
+              max-height: 120px;
+            "
+          ></textarea>
+          <input type="date" id="modal-due_date" />
+          <select id="modal-priority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+          <div style="margin-top: 12px">
+            <button type="submit">Add Task</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="sort-modal" class="main-popup">
+        <img src="../assets/x.svg" alt="Close" onclick="closeSortModal()" style="
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
+              saturate(7492%) hue-rotate(357deg) brightness(97%) contrast(119%);
+          " />
+        <h3>Sort Tasks</h3>
+        <form id="sort-form">
+          <label for="global-sort">Sort By:</label>
+          <select id="global-sort" style="margin-bottom: 16px">
+            <option value="">-- No Sort --</option>
+            <optgroup label="Title">
+              <option value="title|asc">A to Z</option>
+              <option value="title|desc">Z to A</option>
+            </optgroup>
+            <optgroup label="Description">
+              <option value="description|asc">A to Z</option>
+              <option value="description|desc">Z to A</option>
+            </optgroup>
+            <optgroup label="Priority">
+              <option value="priority|high">High to Low</option>
+              <option value="priority|low">Low to High</option>
+            </optgroup>
+            <optgroup label="Due Date">
+              <option value="due_date|asc">Earliest First</option>
+              <option value="due_date|desc">Latest First</option>
+            </optgroup>
+          </select>
+          <div style="margin-top: 12px">
+            <button type="button" onclick="resetsorts()">Reset Sorting</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="filters" style="width: 100%; max-width: none">
+        <div style="
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+          ">
+          <label style="margin-bottom: 0">
+            From: <input type="date" id="fromDate" />
+          </label>
+          <label style="margin-bottom: 0">
+            To: <input type="date" id="toDate" />
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 4px; align-items: center; width: 100%">
+          <input type="text" id="titleSearch" placeholder="Title" style="width: 30%; min-width: 80px" />
+          <input type="text" id="descriptionSearch" placeholder="Description" style="width: 35%; min-width: 80px" />
+          <select id="priorityFilter" style="width: 13%; min-width: 70px">
+            <option value="">All Priorities</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <select id="completionFilter" style="width: 13%; min-width: 70px">
+            <option value="">All Statuses</option>
+            <option value="1">Completed</option>
+            <option value="0">Not Completed</option>
+          </select>
+          <button id="reset-filters" title="Reset Filters" onclick="resetFilters()" style="
+              width: 5%;
+              min-width: 22px;
+              max-width: 25px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0;
+              background: none;
+              border: none;
+              cursor: pointer;
+              margin-left: auto;
+            ">
+            <img src="../assets/funnel-x.svg" alt="Reset Filters" style="width: 22px; height: 22px" />
+          </button>
+          <button id="open-sort-modal" title="Sort Tasks" style="
+              width: 5%;
+              min-width: 22px;
+              max-width: 25px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0;
+              background: none;
+              border: none;
+              cursor: pointer;
+            ">
+            <img src="../assets/arrow-down-up.svg" alt="Sort Tasks" style="width: 22px; height: 22px" />
+          </button>
+        </div>
+      </div>
+
+       <h3>Upcoming Tasks</h3>
+      <table id="upcoming-table">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Due Date</th>
-            <th>Priority</th>
-            <th>Actions</th>
+            <th style="width: 20%">Title</th>
+            <th style="width: 50%">Description</th>
+            <th style="width: 13%">Due Date</th>
+            <th style="width: 13%">Priority</th>
+            <th style="width: 4%"></th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-
+     
       <h3>Expiring Today</h3>
       <table id="today-table">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Due Date</th>
-            <th>Priority</th>
-            <th>Actions</th>
+            <th style="width: 20%">Title</th>
+            <th style="width: 50%">Description</th>
+            <th style="width: 13%">Due Date</th>
+            <th style="width: 13%">Priority</th>
+            <th style="width: 4%"></th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-
-      <h3>Upcoming Tasks</h3>
-      <table id="upcoming-table">
+      
+      <h3>Expired Tasks</h3>
+      <table id="expired-table">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Due Date</th>
-            <th>Priority</th>
-            <th>Actions</th>
+            <th style="width: 20%">Title</th>
+            <th style="width: 50%">Description</th>
+            <th style="width: 13%">Due Date</th>
+            <th style="width: 13%">Priority</th>
+            <th style="width: 4%"></th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
 
-      <div
-        id="reassign-modal"
-        style="
+     
+
+      <div id="reassign-modal" style="
           display: none;
           position: fixed;
           top: 30%;
@@ -128,13 +273,48 @@
           border: 1px solid #ccc;
           border-radius: 10px;
           z-index: 1000;
-        "
-      >
+        ">
         <h4>Reassign Task Due Date</h4>
         <input type="date" id="newDueDate" />
         <br /><br />
         <button onclick="submitReassign()">Save</button>
         <button onclick="closeReassignModal()">Cancel</button>
+      </div>
+
+      <div id="message-modal" class="message-popup">
+        <div style="
+            position: relative;
+            background: white;
+            padding: 28px 32px;
+            border-radius: 10px;
+            min-width: 260px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            text-align: center;
+          ">
+          <img src="../assets/x.svg" alt="Close" onclick="closeMessagePopup()" style="
+              position: absolute;
+              top: 14px;
+              right: 14px;
+              width: 22px;
+              height: 22px;
+              cursor: pointer;
+              filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
+                saturate(7492%) hue-rotate(357deg) brightness(97%)
+                contrast(119%);
+            " />
+          <div id="message-modal-text" style="margin-bottom: 18px; font-size: 16px"></div>
+          <button onclick="closeMessagePopup()" style="
+              padding: 8px 24px;
+              border: none;
+              border-radius: 6px;
+              background: #3498db;
+              color: white;
+              font-size: 15px;
+              cursor: pointer;
+            ">
+            OK
+          </button>
+        </div>
       </div>
     </div>
 
@@ -143,8 +323,9 @@
         .then((res) => res.json())
         .then((data) => {
           if (!data.loggedIn) {
-            // Redirect to login page
             window.location.href = "../../frontend/auth/login.html";
+          } else {
+            document.querySelector(".email").textContent = data.username;
           }
         })
         .catch(() => {
@@ -166,7 +347,12 @@
       function submitReassign() {
         const newDate = document.getElementById("newDueDate").value;
         if (!newDate) {
-          alert("Please select a new due date.");
+          showMessagePopup("Please select a new due date.");
+          return;
+        }
+
+        if (newDate < new Date().toISOString().split("T")[0]) {
+          showMessagePopup("New due date cannot be in the past.");
           return;
         }
 
@@ -182,9 +368,11 @@
           .then((data) => {
             if (data.success) {
               loadTasks();
+              showMessagePopup("Reassigned task successfully!");
               closeReassignModal();
             } else {
-              alert("Failed to reassign task");
+              showMessagePopup("Failed to reassign task: " + data.error);
+              closeReassignModal();
             }
           });
       }
@@ -204,35 +392,71 @@
         .addEventListener("change", loadTasks);
       document.getElementById("fromDate").addEventListener("change", loadTasks);
       document.getElementById("toDate").addEventListener("change", loadTasks);
-      document
-        .getElementById("task-form")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const title = document.getElementById("title").value;
-          const description = document.getElementById("description").value;
-          const dueDate = document.getElementById("due_date").value;
-          const priority = document.getElementById("priority").value;
 
-          fetch("../../backend/tasks/create.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title,
-              description,
-              due_date: dueDate,
-              priority,
-            }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.success) {
-                loadTasks();
-                document.getElementById("task-form").reset();
-              } else {
-                alert(data.error || "Failed to create task");
-              }
-            });
-        });
+      document
+        .getElementById("global-sort")
+        .addEventListener("change", loadTasks);
+
+      const addTaskModal = document.getElementById("add-task-modal");
+      const openAddTaskBtn = document.getElementById("open-add-task-modal");
+      const modalTaskForm = document.getElementById("modal-task-form");
+
+      openAddTaskBtn.onclick = function () {
+        addTaskModal.style.display = "block";
+      };
+
+      function closeAddTaskModal() {
+        addTaskModal.style.display = "none";
+        modalTaskForm.reset();
+      }
+
+      modalTaskForm.onsubmit = function (e) {
+        e.preventDefault();
+        const title = document.getElementById("modal-title").value;
+        const description = document.getElementById("modal-description").value;
+        const dueDate = document.getElementById("modal-due_date").value;
+        const priority = document.getElementById("modal-priority").value;
+
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+
+        if (!title) {
+          showMessagePopup("Title must be set");
+          return;
+        }
+        if (!dueDate) {
+          showMessagePopup("Date must be set");
+          return;
+        }
+        if (dueDate < todayStr) {
+          showMessagePopup("Date cannot be before current date");
+          return;
+        }
+
+        fetch("../../backend/tasks/create.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title,
+            description,
+            due_date: dueDate,
+            priority,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              loadTasks();
+              closeAddTaskModal();
+              showMessagePopup("Task added successfully!");
+            } else {
+              showMessagePopup(data.error || "Failed to create task");
+            }
+          });
+      };
 
       function loadTasks() {
         fetch("../../backend/tasks/read.php")
@@ -251,6 +475,7 @@
               document.getElementById("completionFilter").value;
             const fromDate = document.getElementById("fromDate").value;
             const toDate = document.getElementById("toDate").value;
+            const sortValue = document.getElementById("global-sort").value;
 
             if (fromDate && toDate && fromDate > toDate) {
               alert("From Date cannot be after To Date.");
@@ -274,6 +499,52 @@
             todayBody.innerHTML = "";
             upcomingBody.innerHTML = "";
 
+            if (sortValue) {
+              const [field, order] = sortValue.split("|");
+              tasks.sort((a, b) => {
+                let valA = a[field] || "";
+                let valB = b[field] || "";
+
+                let result = 0;
+
+                if (field === "priority") {
+                  const priorityMap = { High: 3, Medium: 2, Low: 1 };
+                  valA = priorityMap[a.priority] || 0;
+                  valB = priorityMap[b.priority] || 0;
+                  result = order === "high" ? valB - valA : valA - valB;
+                } else if (field === "due_date") {
+                  result =
+                    order === "asc"
+                      ? valA.localeCompare(valB)
+                      : valB.localeCompare(valA);
+                } else if (
+                  typeof valA === "string" &&
+                  typeof valB === "string"
+                ) {
+                  result =
+                    order === "asc"
+                      ? valA.localeCompare(valB)
+                      : valB.localeCompare(valA);
+                }
+
+                if (result === 0) {
+                  return a.created_at.localeCompare(b.created_at);
+                }
+                return result;
+              });
+            }
+
+
+            var expiredTaskCount = 0;
+            var todayTaskCount = 0;
+            var upcomingTaskCount = 0;
+            const allFiltersUnset =
+  !document.getElementById("titleSearch").value.trim() &&
+  !document.getElementById("descriptionSearch").value.trim() &&
+  !document.getElementById("priorityFilter").value &&
+  !document.getElementById("completionFilter").value &&
+  !document.getElementById("fromDate").value &&
+  !document.getElementById("toDate").value;
             tasks
               .filter((task) => {
                 if (search1) {
@@ -307,33 +578,91 @@
                   row.classList.add("completed");
 
                 row.innerHTML = `
-  <td>${task.title}</td>
-  <td>${task.description || "-"}</td>
-  <td>${dueDate || "-"}</td>
-  <td>${task.priority}</td>
-  <td>
-    <button onclick="toggleComplete(${task.id}, ${task.is_completed})">
-      ${task.is_completed == 1 ? "Undo" : "Complete"}
-    </button>
-    <button onclick="deleteTask(${task.id})">Delete</button>
-    ${
-      dueDate && dueDate < today
-        ? `<button onclick="openReassignModal(${task.id})">Reassign</button>`
-        : ""
-    }
-  </td>
-`;
+                  <td title="${task.title}">${task.title}</td>
+                  <td title="${task.description || "-"}">${task.description || "-"}</td>
+                  <td
+                    style="${task.is_completed === "0"
+                    ? dueDate && dueDate < today
+                      ? "color:#e53935;font-weight:bold;"
+                      : dueDate === today
+                        ? "color:#ff9800;font-weight:bold;"
+                        : ""
+                    : ""
+                  }"
+                  >
+                    ${dueDate || "-"}
+                  </td>
+                    <td>
+                      <span class="taskpriority ${task.priority.toLowerCase()}">
+                        ${task.priority}
+                      </span>
+                    </td>
+                    <td style="text-align:center;">
+                      <div class="task-menu-container" style="display:inline-block; position:relative;">
+                        <button class="task-menu-btn" onclick="toggleTaskMenu(event, ${task.id
+                  })" style="background:none; border:none; cursor:pointer; padding:0 6px;">
+                          <span style="font-size:22px; line-height:1; color:#222">&#8942;</span>
+                        </button>
+                        <div class="task-menu-dropdown" id="task-menu-${task.id
+                  }" style="display:none; position:fixed; z-index:9999; min-width:140px;">
+                          <div
+                            onclick="toggleComplete(${task.id}, ${task.is_completed
+                  }); closeAllTaskMenus();"
+                            class="task-menu-action"
+                            style="color: ${task.is_completed == 1 ? "#ff3e17" : "#0d9c00"};"
+                          >
+                            ${task.is_completed == 1 ? "Undo Complete" : "Mark Complete"}
+                          </div>
+                          <div onclick="deleteTask(${task.id
+                  }); closeAllTaskMenus();" class="task-menu-action" style="color:#e74c3c;">
+                            Delete
+                          </div>
+                          ${dueDate && dueDate < today
+                    ? `<div onclick="openReassignModal(${task.id}); closeAllTaskMenus();" class="task-menu-action" style="color:#77c206;">
+                                  Reassign
+                                </div>`
+                    : ""
+                  }
+                        </div>
+                      </div>
+                    </td>
+                  `;
 
                 if (!dueDate) {
+                  upcomingTaskCount++;
                   upcomingBody.appendChild(row);
                 } else if (dueDate < today) {
+                  expiredTaskCount++;
                   expiredBody.appendChild(row);
                 } else if (dueDate === today) {
+                  todayTaskCount++;
                   todayBody.appendChild(row);
                 } else {
+                  upcomingTaskCount++;
                   upcomingBody.appendChild(row);
                 }
               });
+              if(expiredBody.children.length === 0 ) {
+                if(allFiltersUnset) expiredBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No expired tasks</td></tr>";
+                else {
+                  expiredBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
+                }
+              }
+              if(todayBody.children.length === 0) {
+               if(allFiltersUnset) todayBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks expiring today</td></tr>";
+                else {
+                  todayBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
+                }
+              }
+              if(upcomingBody.children.length === 0) {
+                if(allFiltersUnset) upcomingBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No upcoming tasks</td></tr>";
+                else {
+                  upcomingBody.innerHTML = "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
+                }
+              }
+            document.getElementById("overview-expired").textContent = expiredTaskCount;
+            document.getElementById("overview-today").textContent = todayTaskCount;
+            document.getElementById("overview-upcoming").textContent = upcomingTaskCount;
           });
       }
       function resetFilters() {
@@ -343,6 +672,11 @@
         document.getElementById("completionFilter").value = "";
         document.getElementById("fromDate").value = "";
         document.getElementById("toDate").value = "";
+        loadTasks();
+      }
+
+      function resetsorts() {
+        document.getElementById("global-sort").value = "";
         loadTasks();
       }
 
@@ -401,6 +735,65 @@
 
         notif.style.display = "block";
       }
+      function showMessagePopup(message) {
+        const popup = document.getElementById("message-modal");
+        document.getElementById("message-modal-text").textContent = message;
+        popup.style.display = "flex";
+      }
+      function closeMessagePopup() {
+        document.getElementById("message-modal").style.display = "none";
+      }
+
+      function toggleTaskMenu(event, id) {
+        event.stopPropagation();
+        closeAllTaskMenus();
+        const menu = document.getElementById(`task-menu-${id}`);
+        const btn = event.currentTarget;
+        if (menu && btn) {
+          menu.style.display = "block";
+          menu.style.visibility = "hidden";
+          menu.style.top = "0px";
+          menu.style.left = "0px";
+
+          const btnRect = btn.getBoundingClientRect();
+          const parentRect = btn.offsetParent.getBoundingClientRect();
+          const menuWidth = menu.offsetWidth;
+
+          const top = btn.offsetTop;
+          const left = btn.offsetLeft - menuWidth - 8;
+
+          menu.style.top = `${top}px`;
+          menu.style.left = `${left}px`;
+          menu.style.visibility = "visible";
+          menu.style.zIndex = 9999;
+        }
+      }
+
+      function closeAllTaskMenus() {
+        document.querySelectorAll(".task-menu-dropdown").forEach((menu) => {
+          menu.style.display = "none";
+        });
+      }
+
+      document.addEventListener("click", closeAllTaskMenus);
+
+      const sortModal = document.getElementById("sort-modal");
+      const openSortModalBtn = document.getElementById("open-sort-modal");
+      const sortForm = document.getElementById("sort-form");
+
+      openSortModalBtn.onclick = function () {
+        sortModal.style.display = "block";
+      };
+
+      function closeSortModal() {
+        sortModal.style.display = "none";
+      }
+
+      sortForm.onsubmit = function (e) {
+        e.preventDefault();
+        closeSortModal();
+        loadTasks();
+      };
     </script>
   </body>
 </html>
