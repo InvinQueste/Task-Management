@@ -66,6 +66,7 @@ button:disabled {
 
 /* Tables */
 table {
+  table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -75,10 +76,13 @@ table {
 
 th,
 td {
+  overflow: hidden;
   padding: 14px 16px;
   border-bottom: 1px solid #ecf0f1;
   text-align: left;
   font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 th {
@@ -94,6 +98,13 @@ tr:hover {
 .completed {
   text-decoration: line-through;
   color: #95a5a6;
+}
+
+th:last-child,
+td:last-child {
+  overflow: visible !important;
+  text-overflow: unset !important;
+  white-space: normal !important;
 }
 
 /* Modal */
@@ -299,6 +310,19 @@ tr:hover {
 
 .taskpriority.low {
   background: #27ae60;
+}
+
+.task-menu-dropdown {
+  position: absolute !important;
+  z-index: 9999 !important;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .task-menu-dropdown button:hover {
