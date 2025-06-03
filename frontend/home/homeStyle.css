@@ -245,7 +245,7 @@ td:last-child {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
-  background-color: #3e987a; /* Slightly lighter than sidebar background */
+  background-color: #3e987a !important; /* Slightly lighter than sidebar background */
   color: #ffffff; /* White text for contrast */
   border-radius: 8px;
   overflow: hidden;
@@ -258,16 +258,19 @@ td:last-child {
   text-align: left;
 }
 
+#overview-table tr:hover {
+  background-color: #3e987a;
+}
+
 #overview-table th {
   color: white;
-  background-color: #408486;
+  background-color: #408486 !important;
   font-weight: 700;
 }
 
 #overview-table thead {
   border-radius: 8px;
 }
-
 
 /* Adjust main content to leave space for sidebar */
 #main-content {
