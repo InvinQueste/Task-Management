@@ -23,9 +23,10 @@
       <button class="logout-button" onclick="logout()">Logout</button>
       <h2>Welcome to Your Task Dashboard</h2>
 
-      <button id="open-add-task-modal" style="margin-bottom: 20px">
-        Add Task
-      </button>
+      <div style="display: flex; gap: 12px; margin-bottom: 20px">
+        <button id="open-add-task-modal">Add Task</button>
+        <button id="open-sort-modal">Sort Tasks</button>
+      </div>
 
       <div id="add-task-modal" class="main-popup">
         <h3>Add Task</h3>
@@ -49,6 +50,43 @@
           <div style="margin-top: 12px">
             <button type="submit">Add Task</button>
             <button type="button" onclick="closeAddTaskModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="sort-modal" class="main-popup">
+        <h3>Sort Tasks</h3>
+        <form id="sort-form">
+          <label for="global-sort">Sort By:</label>
+          <select id="global-sort" style="margin-bottom: 16px">
+            <option value="">-- No Sort --</option>
+            <optgroup label="Title">
+              <option value="title|asc">A to Z</option>
+              <option value="title|desc">Z to A</option>
+            </optgroup>
+            <optgroup label="Description">
+              <option value="description|asc">A to Z</option>
+              <option value="description|desc">Z to A</option>
+            </optgroup>
+            <optgroup label="Priority">
+              <option value="priority|high">High to Low</option>
+              <option value="priority|low">Low to High</option>
+            </optgroup>
+            <optgroup label="Due Date">
+              <option value="due_date|asc">Earliest First</option>
+              <option value="due_date|desc">Latest First</option>
+            </optgroup>
+          </select>
+          <div style="margin-top: 12px">
+            <button type="submit">Apply Sort</button>
+            <button type="button" onclick="closeSortModal()">Cancel</button>
+            <button
+              type="button"
+              onclick="resetsorts()"
+              style="margin-left: 8px"
+            >
+              Reset Sorting
+            </button>
           </div>
         </form>
       </div>
@@ -115,43 +153,6 @@
             />
           </button>
         </div>
-      </div>
-
-      <div
-        id="sort-options"
-        style="
-          background: #fff;
-          padding: 15px;
-          border-radius: 8px;
-          max-width: 700px;
-          margin-bottom: 20px;
-        "
-      >
-        <label for="global-sort">Sort By: </label>
-        <select id="global-sort">
-          <option value="">-- No Sort --</option>
-
-          <optgroup label="Title">
-            <option value="title|asc">A to Z</option>
-            <option value="title|desc">Z to A</option>
-          </optgroup>
-
-          <optgroup label="Description">
-            <option value="description|asc">A to Z</option>
-            <option value="description|desc">Z to A</option>
-          </optgroup>
-
-          <optgroup label="Priority">
-            <option value="priority|high">High to Low</option>
-            <option value="priority|low">Low to High</option>
-          </optgroup>
-
-          <optgroup label="Due Date">
-            <option value="due_date|asc">Earliest First</option>
-            <option value="due_date|desc">Latest First</option>
-          </optgroup>
-        </select>
-        <button onclick="resetsorts()">Reset Sorting</button>
       </div>
 
       <h3>Expired Tasks</h3>
@@ -379,36 +380,6 @@
             }
           });
       };
-
-      document
-        .getElementById("task-form")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const title = document.getElementById("title").value;
-          const description = document.getElementById("description").value;
-          const dueDate = document.getElementById("due_date").value;
-          const priority = document.getElementById("priority").value;
-
-          fetch("../../backend/tasks/create.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title,
-              description,
-              due_date: dueDate,
-              priority,
-            }),
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              if (data.success) {
-                loadTasks();
-                document.getElementById("task-form").reset();
-              } else {
-                alert(data.error || "Failed to create task");
-              }
-            });
-        });
 
       function loadTasks() {
         fetch("../../backend/tasks/read.php")
@@ -662,71 +633,23 @@
       }
 
       document.addEventListener("click", closeAllTaskMenus);
-      let editTaskId = null;
 
-      function openEditTaskModal(task) {
-        editTaskId = task.id;
-        document.getElementById("edit-title").value = task.title || "";
-        document.getElementById("edit-description").value =
-          task.description || "";
-        document.getElementById("edit-due_date").value = task.due_date || "";
-        document.getElementById("edit-priority").value =
-          task.priority || "Medium";
-        document.getElementById("edit-task-modal").style.display = "block";
+      const sortModal = document.getElementById("sort-modal");
+      const openSortModalBtn = document.getElementById("open-sort-modal");
+      const sortForm = document.getElementById("sort-form");
+
+      openSortModalBtn.onclick = function () {
+        sortModal.style.display = "block";
+      };
+
+      function closeSortModal() {
+        sortModal.style.display = "none";
       }
 
-      function closeEditTaskModal() {
-        document.getElementById("edit-task-modal").style.display = "none";
-        document.getElementById("edit-task-form").reset();
-      }
-
-      document.getElementById("edit-task-form").onsubmit = function (e) {
+      sortForm.onsubmit = function (e) {
         e.preventDefault();
-        const title = document.getElementById("edit-title").value.trim();
-        const description = document.getElementById("edit-description").value;
-        const due_date = document.getElementById("edit-due_date").value;
-        const priority = document.getElementById("edit-priority").value;
-
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, "0");
-        const dd = String(today.getDate()).padStart(2, "0");
-        const todayStr = `${yyyy}-${mm}-${dd}`;
-
-        if (!title) {
-          showMessagePopup("Title must be set");
-          return;
-        }
-        if (!due_date) {
-          showMessagePopup("Date must be set");
-          return;
-        }
-        if (due_date < todayStr) {
-          showMessagePopup("Date cannot be before current date");
-          return;
-        }
-
-        fetch("../../backend/tasks/update.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: editTaskId,
-            title,
-            description,
-            due_date,
-            priority,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success) {
-              loadTasks();
-              closeEditTaskModal();
-              showMessagePopup("Task updated successfully!");
-            } else {
-              showMessagePopup(data.error || "Failed to update task");
-            }
-          });
+        closeSortModal();
+        loadTasks();
       };
     </script>
   </body>
