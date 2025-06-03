@@ -506,9 +506,13 @@
       <div class="task-menu-dropdown" id="task-menu-${
         task.id
       }" style="display:none; position:absolute; right:0; top:28px; background:#fff; border:1px solid #ccc; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,0.08); z-index:10;">
-        <div onclick="toggleComplete(${task.id}, ${
+        <div
+          onclick="toggleComplete(${task.id}, ${
                   task.is_completed
-                }); closeAllTaskMenus();" class="task-menu-action">
+                }); closeAllTaskMenus();"
+          class="task-menu-action"
+          style="color: ${task.is_completed == 1 ? "#ff5e00" : "#0d9c00"};"
+        >
           ${task.is_completed == 1 ? "Undo Complete" : "Mark Complete"}
         </div>
         <div onclick="deleteTask(${
@@ -518,7 +522,7 @@
         </div>
         ${
           dueDate && dueDate < today
-            ? `<div onclick="openReassignModal(${task.id}); closeAllTaskMenus();" class="task-menu-action">
+            ? `<div onclick="openReassignModal(${task.id}); closeAllTaskMenus();" class="task-menu-action" style="color:#77c206;">
                 Reassign
               </div>`
             : ""
