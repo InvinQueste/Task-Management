@@ -66,6 +66,21 @@
       </div>
 
       <div id="add-task-modal" class="main-popup">
+        <img
+          src="../assets/x.svg"
+          alt="Close"
+          onclick="closeAddTaskModal()"
+          style="
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
+              saturate(7492%) hue-rotate(357deg) brightness(97%) contrast(119%);
+          "
+        />
         <h3>Add Task</h3>
         <form id="modal-task-form">
           <input
@@ -86,12 +101,26 @@
           </select>
           <div style="margin-top: 12px">
             <button type="submit">Add Task</button>
-            <button type="button" onclick="closeAddTaskModal()">Cancel</button>
           </div>
         </form>
       </div>
 
       <div id="sort-modal" class="main-popup">
+        <img
+          src="../assets/x.svg"
+          alt="Close"
+          onclick="closeSortModal()"
+          style="
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
+              saturate(7492%) hue-rotate(357deg) brightness(97%) contrast(119%);
+          "
+        />
         <h3>Sort Tasks</h3>
         <form id="sort-form">
           <label for="global-sort">Sort By:</label>
@@ -115,15 +144,7 @@
             </optgroup>
           </select>
           <div style="margin-top: 12px">
-            <button type="submit">Apply Sort</button>
-            <button type="button" onclick="closeSortModal()">Cancel</button>
-            <button
-              type="button"
-              onclick="resetsorts()"
-              style="margin-left: 8px"
-            >
-              Reset Sorting
-            </button>
+            <button type="button" onclick="resetsorts()">Reset Sorting</button>
           </div>
         </form>
       </div>
@@ -285,6 +306,7 @@
       <div id="message-modal" class="message-popup">
         <div
           style="
+            position: relative;
             background: white;
             padding: 28px 32px;
             border-radius: 10px;
@@ -293,6 +315,22 @@
             text-align: center;
           "
         >
+          <img
+            src="../assets/x.svg"
+            alt="Close"
+            onclick="closeMessagePopup()"
+            style="
+              position: absolute;
+              top: 14px;
+              right: 14px;
+              width: 22px;
+              height: 22px;
+              cursor: pointer;
+              filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
+                saturate(7492%) hue-rotate(357deg) brightness(97%)
+                contrast(119%);
+            "
+          />
           <div
             id="message-modal-text"
             style="margin-bottom: 18px; font-size: 16px"
@@ -343,7 +381,12 @@
       function submitReassign() {
         const newDate = document.getElementById("newDueDate").value;
         if (!newDate) {
-          alert("Please select a new due date.");
+          showMessagePopup("Please select a new due date.");
+          return;
+        }
+
+        if (newDate < new Date().toISOString().split("T")[0]) {
+          showMessagePopup("New due date cannot be in the past.");
           return;
         }
 
@@ -359,9 +402,11 @@
           .then((data) => {
             if (data.success) {
               loadTasks();
+              showMessagePopup("Reassigned task successfully!");
               closeReassignModal();
             } else {
-              alert("Failed to reassign task");
+              showMessagePopup("Failed to reassign task: " + data.error);
+              closeReassignModal();
             }
           });
       }
