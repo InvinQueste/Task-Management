@@ -11,7 +11,3 @@ Saptak Manna
 Sneha Datta
 
 Srijan Saha
-
-## Setup:
-
-(To be recorded)
