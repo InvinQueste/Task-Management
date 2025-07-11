@@ -2,8 +2,8 @@
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header("Location: frontend/home/home.html");
+    header("Location: /dashboard");
 } else {
-    header("Location: frontend/auth/login.html");
+    header("Location: /login");
 }
 exit;

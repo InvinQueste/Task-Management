@@ -2,5 +2,5 @@
 session_start();
 $_SESSION = [];
 session_destroy();
-header("Location: ../../frontend/auth/login.html");
+header("Location: /login");
 exit;
