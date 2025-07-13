@@ -1,13 +1,13 @@
-fetch("/backend/auth/authenticate.php")
+fetch("/Task-Management/backend/auth/authenticate.php")
   .then((res) => res.json())
   .then((data) => {
     if (data.loggedIn) {
-      window.location.href = "/dashboard";
+      window.location.href = "/Task-Management/dashboard";
     }
   })
   .catch(() => {
     alert("Failed to check login status.");
-    window.location.href = "/login";
+    window.location.href = "/Task-Management/login";
   });
 const form = document.getElementById("loginForm");
 const message = document.getElementById("message");
@@ -16,7 +16,7 @@ form.addEventListener("submit", function (e) {
   e.preventDefault();
   const formData = new FormData(form);
 
-  fetch("/backend/auth/login.php", {
+  fetch("/Task-Management/backend/auth/login.php", {
     method: "POST",
     body: formData,
   })
@@ -27,7 +27,7 @@ form.addEventListener("submit", function (e) {
 
       if (data.success) {
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          window.location.href = "/Task-Management/dashboard";
         }, 1000);
       }
     })

@@ -1,139 +1,87 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <base href="/" />
+    <base href="/Task-Management/" />
     <title>Task Dashboard</title>
-    <link rel="stylesheet" href="/frontend/home/homeStyle.css" />
+    <link rel="stylesheet" href="/Task-Management/frontend/home/homeStyle.css" />
   </head>
-
   <body>
     <div id="sidebar">
       <div class="profile">
-        <img src="/frontend/assets/profile_image.jpg" alt="User Profile" />
+        <img src="/Task-Management/frontend/assets/profile_image.jpg" alt="User Profile" />
         <p class="email">user@gmail.com</p>
       </div>
       <nav>
         <ul>
           <li><a href="#" class="active">Dashboard</a></li>
           <li>
-            <a onclick="logout()" style="color: red; cursor: pointer;">Logout</a>
+            <a id="logout-link" class="logout-link">Logout</a>
           </li>
         </ul>
       </nav>
       <div>
-        <h3>
-          Overview
-        </h3>
+        <h3>Overview</h3>
         <table id="overview-table">
-          <th style="width: 70%;">Category</th>
-          <th style="width: 30%;">#</th>
-          </tr>
-          <tr>
-            <td>Upcoming Tasks</td>
-            <td id="overview-upcoming">0</td>
-          </tr>
-          
-          <tr>
-            <td>Expiring Today</td>
-            <td id="overview-today">0</td>
-          </tr>
-          <tr>
-            <td>Expired Tasks</td>
-            <td id="overview-expired">0</td>
-          </tr>
+          <thead>
+            <tr>
+              <th class="overview-category-col">Category</th>
+              <th class="overview-count-col">#</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Upcoming Tasks</td>
+              <td id="overview-upcoming">0</td>
+            </tr>
+            <tr>
+              <td>Expiring Today</td>
+              <td id="overview-today">0</td>
+            </tr>
+            <tr>
+              <td>Expired Tasks</td>
+              <td id="overview-expired">0</td>
+            </tr>
+          </tbody>
         </table>
       </div>
-      <div style="margin-top: auto;">
+      <div class="sidebar-footer">
         <p>&copy; 2025 Task Manager</p>
       </div>
     </div>
     <div id="main-content">
       <div id="notification" class="hidden"></div>
       <h2>Welcome to Your Task Dashboard</h2>
-
-      <div style="display: flex; justify-content: center">
-        <button id="open-add-task-modal" style="
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 28px;
-            padding: 44px 60px 28px 60px;
-            margin: 28px 0 40px 0;
-            cursor: pointer;
-            box-shadow: 0 2px 12px rgba(23, 189, 120, 0.9);
-            transition: background 0.2s;
-          ">
-          <img src="/frontend/assets/plus.svg" alt="Add" style="
-              width: 72px;
-              height: 72px;
-              margin-bottom: 18px;
-              filter: brightness(0) invert(1);
-            " />
-          <span style="
-              color: #fff;
-              font-size: 28px;
-              font-weight: 700;
-              letter-spacing: 0.5px;
-              margin-bottom: 10px;
-              text-align: center;
-              display: block;
-            ">Add Task</span>
+      <div class="add-task-btn-container">
+        <button id="open-add-task-modal" class="add-task-btn">
+          <img src="/Task-Management/frontend/assets/plus.svg" alt="Add" class="add-task-icon" />
+          <span class="add-task-label">Add Task</span>
         </button>
       </div>
-
       <div id="add-task-modal" class="main-popup">
-        <img src="/frontend/assets/x.svg" alt="Close" onclick="closeAddTaskModal()" style="
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
-              saturate(7492%) hue-rotate(357deg) brightness(97%) contrast(119%);
-          " />
+        <img src="/Task-Management/frontend/assets/x.svg" alt="Close" id="close-add-task-modal"
+          class="popup-close-icon" />
         <h3>Add Task</h3>
         <form id="modal-task-form">
           <input type="text" id="modal-title" placeholder="Task title" required />
-          <textarea
-            id="modal-description"
-            placeholder="Description (optional)"
-            style="
-              resize: vertical;
-              height: 80px;
-              min-height: 50px;
-              max-height: 120px;
-            "
-          ></textarea>
+          <textarea id="modal-description" placeholder="Description (optional)"
+            class="modal-description-textarea"></textarea>
           <input type="date" id="modal-due_date" />
           <select id="modal-priority">
             <option value="Low">Low</option>
             <option value="Medium" selected>Medium</option>
             <option value="High">High</option>
           </select>
-          <div style="margin-top: 12px">
+          <div class="modal-btn-row">
             <button type="submit">Add Task</button>
           </div>
         </form>
       </div>
-
       <div id="sort-modal" class="main-popup">
-        <img src="/frontend/assets/x.svg" alt="Close" onclick="closeSortModal()" style="
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
-              saturate(7492%) hue-rotate(357deg) brightness(97%) contrast(119%);
-          " />
+        <img src="/Task-Management/frontend/assets/x.svg" alt="Close" id="close-sort-modal" class="popup-close-icon" />
         <h3>Sort Tasks</h3>
         <form id="sort-form">
           <label for="global-sort">Sort By:</label>
-          <select id="global-sort" style="margin-bottom: 16px">
+          <select id="global-sort" class="sort-select">
             <option value="">-- No Sort --</option>
             <optgroup label="Title">
               <option value="title|asc">A to Z</option>
@@ -152,173 +100,100 @@
               <option value="due_date|desc">Latest First</option>
             </optgroup>
           </select>
-          <div style="margin-top: 12px">
-            <button type="button" onclick="resetsorts()">Reset Sorting</button>
+          <div class="modal-btn-row">
+            <button type="button" id="reset-sorting-btn">Reset Sorting</button>
           </div>
         </form>
       </div>
-
-      <div id="filters" style="width: 100%; max-width: none">
-        <div style="
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 10px;
-          ">
-          <label style="margin-bottom: 0">
+      <div id="filters" class="filters-container">
+        <div class="filters-date-row">
+          <label class="filters-label">
             From: <input type="date" id="fromDate" />
           </label>
-          <label style="margin-bottom: 0">
+          <label class="filters-label">
             To: <input type="date" id="toDate" />
           </label>
         </div>
-
-        <div style="display: flex; gap: 4px; align-items: center; width: 100%">
-          <input type="text" id="titleSearch" placeholder="Title" style="width: 30%; min-width: 80px" />
-          <input type="text" id="descriptionSearch" placeholder="Description" style="width: 35%; min-width: 80px" />
-          <select id="priorityFilter" style="width: 13%; min-width: 70px">
+        <div class="filters-input-row">
+          <input type="text" id="titleSearch" placeholder="Title" class="filters-title-input" />
+          <input type="text" id="descriptionSearch" placeholder="Description" class="filters-desc-input" />
+          <select id="priorityFilter" class="filters-priority-select">
             <option value="">All Priorities</option>
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
           </select>
-          <select id="completionFilter" style="width: 13%; min-width: 70px">
+          <select id="completionFilter" class="filters-completion-select">
             <option value="">All Statuses</option>
             <option value="1">Completed</option>
             <option value="0">Not Completed</option>
           </select>
-          <button id="reset-filters" title="Reset Filters" onclick="resetFilters()" style="
-              width: 5%;
-              min-width: 22px;
-              max-width: 25px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              padding: 0;
-              background: none;
-              border: none;
-              cursor: pointer;
-              margin-left: auto;
-            ">
-            <img src="/frontend/assets/funnel-x.svg" alt="Reset Filters" style="width: 22px; height: 22px" />
+          <button id="reset-filters" title="Reset Filters" class="filters-icon-btn">
+            <img src="/Task-Management/frontend/assets/funnel-x.svg" alt="Reset Filters" class="filters-icon" />
           </button>
-          <button id="open-sort-modal" title="Sort Tasks" style="
-              width: 5%;
-              min-width: 22px;
-              max-width: 25px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              padding: 0;
-              background: none;
-              border: none;
-              cursor: pointer;
-            ">
-            <img src="/frontend/assets/arrow-down-up.svg" alt="Sort Tasks" style="width: 22px; height: 22px" />
+          <button id="open-sort-modal" title="Sort Tasks" class="filters-icon-btn">
+            <img src="/Task-Management/frontend/assets/arrow-down-up.svg" alt="Sort Tasks" class="filters-icon" />
           </button>
         </div>
       </div>
-
-       <h3>Upcoming Tasks</h3>
+      <h3>Upcoming Tasks</h3>
       <table id="upcoming-table">
         <thead>
           <tr>
-            <th style="width: 20%">Title</th>
-            <th style="width: 50%">Description</th>
-            <th style="width: 13%">Due Date</th>
-            <th style="width: 13%">Priority</th>
-            <th style="width: 4%"></th>
+            <th class="task-title-col">Title</th>
+            <th class="task-desc-col">Description</th>
+            <th class="task-date-col">Due Date</th>
+            <th class="task-priority-col">Priority</th>
+            <th class="task-menu-col"></th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-     
       <h3>Expiring Today</h3>
       <table id="today-table">
         <thead>
           <tr>
-            <th style="width: 20%">Title</th>
-            <th style="width: 50%">Description</th>
-            <th style="width: 13%">Due Date</th>
-            <th style="width: 13%">Priority</th>
-            <th style="width: 4%"></th>
+            <th class="task-title-col">Title</th>
+            <th class="task-desc-col">Description</th>
+            <th class="task-date-col">Due Date</th>
+            <th class="task-priority-col">Priority</th>
+            <th class="task-menu-col"></th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-      
       <h3>Expired Tasks</h3>
       <table id="expired-table">
         <thead>
           <tr>
-            <th style="width: 20%">Title</th>
-            <th style="width: 50%">Description</th>
-            <th style="width: 13%">Due Date</th>
-            <th style="width: 13%">Priority</th>
-            <th style="width: 4%"></th>
+            <th class="task-title-col">Title</th>
+            <th class="task-desc-col">Description</th>
+            <th class="task-date-col">Due Date</th>
+            <th class="task-priority-col">Priority</th>
+            <th class="task-menu-col"></th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-
-     
-
-      <div id="reassign-modal" style="
-          display: none;
-          position: fixed;
-          top: 30%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: white;
-          padding: 20px;
-          border: 1px solid #ccc;
-          border-radius: 10px;
-          z-index: 1000;
-        ">
+      <div id="reassign-modal" class="main-popup reassign-modal">
         <h4>Reassign Task Due Date</h4>
         <input type="date" id="newDueDate" />
-        <br /><br />
-        <button onclick="submitReassign()">Save</button>
-        <button onclick="closeReassignModal()">Cancel</button>
+        <div class="modal-btn-row">
+          <button id="submit-reassign-btn">Save</button>
+          <button id="close-reassign-modal-btn">Cancel</button>
+        </div>
       </div>
-
       <div id="message-modal" class="message-popup">
-        <div style="
-            position: relative;
-            background: white;
-            padding: 28px 32px;
-            border-radius: 10px;
-            min-width: 260px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-            text-align: center;
-          ">
-          <img src="/frontend/assets/x.svg" alt="Close" onclick="closeMessagePopup()" style="
-              position: absolute;
-              top: 14px;
-              right: 14px;
-              width: 22px;
-              height: 22px;
-              cursor: pointer;
-              filter: brightness(0) saturate(100%) invert(24%) sepia(99%)
-                saturate(7492%) hue-rotate(357deg) brightness(97%)
-                contrast(119%);
-            " />
-          <div id="message-modal-text" style="margin-bottom: 18px; font-size: 16px"></div>
-          <button onclick="closeMessagePopup()" style="
-              padding: 8px 24px;
-              border: none;
-              border-radius: 6px;
-              background: #3498db;
-              color: white;
-              font-size: 15px;
-              cursor: pointer;
-            ">
+        <div class="message-popup-content">
+          <img src="/Task-Management/frontend/assets/x.svg" alt="Close" id="close-message-modal"
+            class="popup-close-icon" />
+          <div id="message-modal-text" class="message-modal-text"></div>
+          <button id="close-message-modal-btn" class="message-popup-ok-btn">
             OK
           </button>
         </div>
       </div>
     </div>
-
-    <script src="/frontend/home/home.js"></script>
+    <script src="/Task-Management/frontend/home/home.js"></script>
   </body>
 </html>

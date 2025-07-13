@@ -2,8 +2,8 @@
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header("Location: /dashboard");
+    header("Location: /Task-Management/dashboard");
 } else {
-    header("Location: /login");
+    header("Location: /Task-Management/login");
 }
 exit;

@@ -204,7 +204,6 @@ td:last-child {
   width: 80px;
   height: 80px;
   object-fit: cover;
-  /* Ensures proper cropping */
   border-radius: 50%;
   margin-bottom: 10px;
 }
@@ -245,8 +244,8 @@ td:last-child {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
-  background-color: #3e987a !important; /* Slightly lighter than sidebar background */
-  color: #ffffff; /* White text for contrast */
+  background-color: #3e987a !important;
+  color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
   font-size: 14px;
@@ -373,6 +372,291 @@ td:last-child {
 .task-menu-action:hover {
   background: #f0f4f8;
 }
+
+/* Sidebar logout link */
+.logout-link {
+  color: red !important;
+  cursor: pointer;
+  font-weight: 600;
+  background: none;
+  border: none;
+  text-decoration: none;
+  padding: 0;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+  margin-top: auto;
+}
+
+/* Add Task Button Container */
+.add-task-btn-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Add Task Button */
+.add-task-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 28px;
+  padding: 44px 60px 28px 60px;
+  margin: 28px 0 40px 0;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(23, 189, 120, 0.9);
+  background: linear-gradient(135deg, #27a168 0%, #38d89b 100%);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.add-task-btn:hover {
+  background: linear-gradient(135deg, #4ad996 0%, #7fffd4 100%);
+  transform: scale(1.2);
+}
+
+.add-task-btn:active {
+  background: linear-gradient(135deg, #1e7e53 0%, #27a168 100%);
+  transform: scale(0.9);
+}
+
+.add-task-icon {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 18px;
+  filter: brightness(0) invert(1);
+}
+
+.add-task-label {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  text-align: center;
+  display: block;
+}
+
+/* Popup close icon */
+.popup-close-icon {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  filter: brightness(0) saturate(100%) invert(24%) sepia(99%) saturate(7492%) hue-rotate(357deg) brightness(97%) contrast(119%);
+}
+
+/* Modal description textarea */
+.modal-description-textarea {
+  resize: vertical;
+  height: 80px;
+  min-height: 50px;
+  max-height: 120px;
+}
+
+/* Modal button row */
+.modal-btn-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+/* Sort select */
+.sort-select {
+  margin-bottom: 16px;
+}
+
+/* Filters container */
+.filters-container {
+  width: 100%;
+  max-width: none;
+}
+
+/* Filters date row */
+.filters-date-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Filters label */
+.filters-label {
+  margin-bottom: 0;
+}
+
+/* Filters input row */
+.filters-input-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
+}
+
+/* Filters inputs and selects */
+.filters-title-input {
+  width: 30%;
+  min-width: 80px;
+}
+.filters-desc-input {
+  width: 35%;
+  min-width: 80px;
+}
+.filters-priority-select,
+.filters-completion-select {
+  width: 13%;
+  min-width: 70px;
+}
+
+/* Filters icon button */
+.filters-icon-btn {
+  width: 5%;
+  min-width: 22px;
+  max-width: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* Filters icon */
+.filters-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* Message popup content */
+.message-popup-content {
+  position: relative;
+  background: white;
+  padding: 28px 32px;
+  border-radius: 10px;
+  min-width: 260px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+/* Message modal text */
+.message-modal-text {
+  margin-bottom: 18px;
+  font-size: 16px;
+}
+
+/* Message popup OK button */
+.message-popup-ok-btn {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 6px;
+  background: #3498db;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Reassign modal */
+/* .reassign-modal {
+  // Inherits .main-popup
+} */
+
+/* Hide by default for modals and popups */
+#add-task-modal,
+#sort-modal,
+#reassign-modal,
+#message-modal {
+  display: none;
+}
+
+/* Centered cell for empty state and menu */
+.centered-cell {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* Expired date cell */
+.expired-date {
+  color: #e53935 !important;
+  font-weight: bold !important;
+}
+
+/* Warning date cell (today) */
+.warning-date {
+  color: #ff9800 !important;
+  font-weight: bold !important;
+}
+
+/* Dropdown menu visibility */
+.dropdown-visible {
+  display: block !important;
+  visibility: visible !important;
+  z-index: 9999 !important;
+}
+
+/* Task menu icon */
+.task-menu-icon {
+  font-size: 22px;
+  line-height: 1;
+  color: #222;
+}
+
+/* Task menu actions */
+.action-complete {
+  color: #0d9c00 !important;
+}
+.action-undo {
+  color: #ff3e17 !important;
+}
+.action-delete {
+  color: #e74c3c !important;
+}
+.action-reassign {
+  color: #77c206 !important;
+}
+
+/* Hide notification by default */
+#notification {
+  display: none;
+}
+
+/* Show notification */
+#notification.show {
+  display: block;
+}
+
+/* Message modal visibility */
+#message-modal.modal-visible {
+  display: flex !important;
+}
+
+/* Reassign modal visibility */
+#reassign-modal.modal-visible {
+  display: block !important;
+}
+
+/* Add task modal visibility */
+#add-task-modal.modal-visible {
+  display: block !important;
+}
+
+/* Sort modal visibility */
+#sort-modal.modal-visible {
+  display: block !important;
+}
+
+/* Table column widths */
+.overview-category-col { width: 70%; }
+.overview-count-col { width: 30%; }
+.task-title-col { width: 20%; }
+.task-desc-col { width: 50%; }
+.task-date-col { width: 13%; }
+.task-priority-col { width: 13%; }
+.task-menu-col { width: 4%; }
 
 /* Responsive: hide sidebar on small screens */
 @media (max-width: 768px) {

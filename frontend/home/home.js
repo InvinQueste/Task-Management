@@ -1,26 +1,27 @@
-fetch("/backend/auth/authenticate.php")
+fetch("/Task-Management/backend/auth/authenticate.php")
   .then((res) => res.json())
   .then((data) => {
     if (!data.loggedIn) {
-      window.location.href = "/login";
+      window.location.href = "/Task-Management/login";
     } else {
       document.querySelector(".email").textContent = data.username;
     }
   })
   .catch(() => {
     alert("Failed to check login status.");
-    window.location.href = "/login";
+    window.location.href = "/Task-Management/login";
   });
+
 let reassignTaskId = null;
 
 function openReassignModal(taskId) {
   reassignTaskId = taskId;
   document.getElementById("newDueDate").value = "";
-  document.getElementById("reassign-modal").style.display = "block";
+  document.getElementById("reassign-modal").classList.add("modal-visible");
 }
 
 function closeReassignModal() {
-  document.getElementById("reassign-modal").style.display = "none";
+  document.getElementById("reassign-modal").classList.remove("modal-visible");
 }
 
 function submitReassign() {
@@ -29,13 +30,11 @@ function submitReassign() {
     showMessagePopup("Please select a new due date.");
     return;
   }
-
   if (newDate < new Date().toISOString().split("T")[0]) {
     showMessagePopup("New due date cannot be in the past.");
     return;
   }
-
-  fetch("/backend/tasks/update.php", {
+  fetch("/Task-Management/backend/tasks/update.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -67,7 +66,6 @@ document
   .addEventListener("change", loadTasks);
 document.getElementById("fromDate").addEventListener("change", loadTasks);
 document.getElementById("toDate").addEventListener("change", loadTasks);
-
 document.getElementById("global-sort").addEventListener("change", loadTasks);
 
 const addTaskModal = document.getElementById("add-task-modal");
@@ -75,11 +73,11 @@ const openAddTaskBtn = document.getElementById("open-add-task-modal");
 const modalTaskForm = document.getElementById("modal-task-form");
 
 openAddTaskBtn.onclick = function () {
-  addTaskModal.style.display = "block";
+  addTaskModal.classList.add("modal-visible");
 };
 
 function closeAddTaskModal() {
-  addTaskModal.style.display = "none";
+  addTaskModal.classList.remove("modal-visible");
   modalTaskForm.reset();
 }
 
@@ -109,7 +107,7 @@ modalTaskForm.onsubmit = function (e) {
     return;
   }
 
-  fetch("/backend/tasks/create.php", {
+  fetch("/Task-Management/backend/tasks/create.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -131,8 +129,98 @@ modalTaskForm.onsubmit = function (e) {
     });
 };
 
+function clearTableBody(tbody) {
+  while (tbody.firstChild) {
+    tbody.removeChild(tbody.firstChild);
+  }
+}
+
+function createCell(text, classNames = []) {
+  const td = document.createElement("td");
+  td.textContent = text;
+  if (classNames.length) td.classList.add(...classNames);
+  return td;
+}
+
+function createPriorityCell(priority) {
+  const td = document.createElement("td");
+  const span = document.createElement("span");
+  span.className = `taskpriority ${priority.toLowerCase()}`;
+  span.textContent = priority;
+  td.appendChild(span);
+  return td;
+}
+
+function createTaskMenu(task, today) {
+  const td = document.createElement("td");
+  td.classList.add("centered-cell");
+
+  const container = document.createElement("div");
+  container.className = "task-menu-container";
+
+  const btn = document.createElement("button");
+  btn.className = "task-menu-btn";
+  btn.setAttribute("aria-label", "Task Menu");
+  btn.type = "button";
+  btn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    closeAllTaskMenus();
+    const menu = document.getElementById(`task-menu-${task.id}`);
+    if (menu) {
+      menu.classList.add("dropdown-visible");
+    }
+  });
+
+  const icon = document.createElement("span");
+  icon.className = "task-menu-icon";
+  icon.textContent = "\u22EE";
+  btn.appendChild(icon);
+
+  const dropdown = document.createElement("div");
+  dropdown.className = "task-menu-dropdown";
+  dropdown.id = `task-menu-${task.id}`;
+
+  const completeDiv = document.createElement("div");
+  completeDiv.className = "task-menu-action";
+  completeDiv.classList.add(
+    task.is_completed == 1 ? "action-undo" : "action-complete"
+  );
+  completeDiv.textContent =
+    task.is_completed == 1 ? "Undo Complete" : "Mark Complete";
+  completeDiv.addEventListener("click", () => {
+    toggleComplete(task.id, task.is_completed);
+    closeAllTaskMenus();
+  });
+  dropdown.appendChild(completeDiv);
+
+  const deleteDiv = document.createElement("div");
+  deleteDiv.className = "task-menu-action action-delete";
+  deleteDiv.textContent = "Delete";
+  deleteDiv.addEventListener("click", () => {
+    deleteTask(task.id);
+    closeAllTaskMenus();
+  });
+  dropdown.appendChild(deleteDiv);
+
+  if (task.due_date && task.due_date < today) {
+    const reassignDiv = document.createElement("div");
+    reassignDiv.className = "task-menu-action action-reassign";
+    reassignDiv.textContent = "Reassign";
+    reassignDiv.addEventListener("click", () => {
+      openReassignModal(task.id);
+      closeAllTaskMenus();
+    });
+    dropdown.appendChild(reassignDiv);
+  }
+
+  container.appendChild(btn);
+  container.appendChild(dropdown);
+  td.appendChild(container);
+  return td;
+}
+
 function loadTasks() {
-  fetch("/backend/tasks/read.php")
+  fetch("/Task-Management/backend/tasks/read.php")
     .then((res) => res.json())
     .then((tasks) => {
       const search2 = document
@@ -165,18 +253,16 @@ function loadTasks() {
       const todayBody = document.querySelector("#today-table tbody");
       const upcomingBody = document.querySelector("#upcoming-table tbody");
 
-      expiredBody.innerHTML = "";
-      todayBody.innerHTML = "";
-      upcomingBody.innerHTML = "";
+      clearTableBody(expiredBody);
+      clearTableBody(todayBody);
+      clearTableBody(upcomingBody);
 
       if (sortValue) {
         const [field, order] = sortValue.split("|");
         tasks.sort((a, b) => {
           let valA = a[field] || "";
           let valB = b[field] || "";
-
           let result = 0;
-
           if (field === "priority") {
             const priorityMap = { High: 3, Medium: 2, Low: 1 };
             valA = priorityMap[a.priority] || 0;
@@ -193,7 +279,6 @@ function loadTasks() {
                 ? valA.localeCompare(valB)
                 : valB.localeCompare(valA);
           }
-
           if (result === 0) {
             return a.created_at.localeCompare(b.created_at);
           }
@@ -211,6 +296,7 @@ function loadTasks() {
         !document.getElementById("completionFilter").value &&
         !document.getElementById("fromDate").value &&
         !document.getElementById("toDate").value;
+
       tasks
         .filter((task) => {
           if (search1) {
@@ -221,17 +307,13 @@ function loadTasks() {
             const text = (task.description || "").toLowerCase();
             if (!text.includes(search2)) return false;
           }
-
           if (priority && task.priority !== priority) return false;
-
           if (completion !== "" && String(task.is_completed) !== completion)
             return false;
-
           if (fromDate && (!task.due_date || task.due_date < fromDate))
             return false;
           if (toDate && (!task.due_date || task.due_date > toDate))
             return false;
-
           return true;
         })
         .forEach((task) => {
@@ -240,70 +322,24 @@ function loadTasks() {
           if (task.is_completed === "1" || task.is_completed === 1)
             row.classList.add("completed");
 
-          row.innerHTML = `
-                  <td title="${task.title}">${task.title}</td>
-                  <td title="${task.description || "-"}">${
-            task.description || "-"
-          }</td>
-                  <td
-                    style="${
-                      task.is_completed === "0"
-                        ? dueDate && dueDate < today
-                          ? "color:#e53935;font-weight:bold;"
-                          : dueDate === today
-                          ? "color:#ff9800;font-weight:bold;"
-                          : ""
-                        : ""
-                    }"
-                  >
-                    ${dueDate || "-"}
-                  </td>
-                    <td>
-                      <span class="taskpriority ${task.priority.toLowerCase()}">
-                        ${task.priority}
-                      </span>
-                    </td>
-                    <td style="text-align:center;">
-                      <div class="task-menu-container" style="display:inline-block; position:relative;">
-                        <button class="task-menu-btn" onclick="toggleTaskMenu(event, ${
-                          task.id
-                        })" style="background:none; border:none; cursor:pointer; padding:0 6px;">
-                          <span style="font-size:22px; line-height:1; color:#222">&#8942;</span>
-                        </button>
-                        <div class="task-menu-dropdown" id="task-menu-${
-                          task.id
-                        }" style="display:none; position:fixed; z-index:9999; min-width:140px;">
-                          <div
-                            onclick="toggleComplete(${task.id}, ${
-            task.is_completed
-          }); closeAllTaskMenus();"
-                            class="task-menu-action"
-                            style="color: ${
-                              task.is_completed == 1 ? "#ff3e17" : "#0d9c00"
-                            };"
-                          >
-                            ${
-                              task.is_completed == 1
-                                ? "Undo Complete"
-                                : "Mark Complete"
-                            }
-                          </div>
-                          <div onclick="deleteTask(${
-                            task.id
-                          }); closeAllTaskMenus();" class="task-menu-action" style="color:#e74c3c;">
-                            Delete
-                          </div>
-                          ${
-                            dueDate && dueDate < today
-                              ? `<div onclick="openReassignModal(${task.id}); closeAllTaskMenus();" class="task-menu-action" style="color:#77c206;">
-                                  Reassign
-                                </div>`
-                              : ""
-                          }
-                        </div>
-                      </div>
-                    </td>
-                  `;
+          row.appendChild(createCell(task.title || "-", ["cell-title"]));
+          row.appendChild(
+            createCell(task.description || "-", ["cell-description"])
+          );
+
+          const dueDateCell = document.createElement("td");
+          dueDateCell.textContent = dueDate || "-";
+          if (task.is_completed === "0") {
+            if (dueDate && dueDate < today) {
+              dueDateCell.classList.add("expired-date");
+            } else if (dueDate === today) {
+              dueDateCell.classList.add("warning-date");
+            }
+          }
+          row.appendChild(dueDateCell);
+
+          row.appendChild(createPriorityCell(task.priority));
+          row.appendChild(createTaskMenu(task, today));
 
           if (!dueDate) {
             upcomingTaskCount++;
@@ -319,33 +355,38 @@ function loadTasks() {
             upcomingBody.appendChild(row);
           }
         });
+
+      function appendEmptyRow(tbody, message) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 5;
+        td.className = "centered-cell";
+        td.textContent = message;
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      }
+
       if (expiredBody.children.length === 0) {
-        if (allFiltersUnset)
-          expiredBody.innerHTML =
-            "<tr><td colspan='5' style='text-align:center'>No expired tasks</td></tr>";
-        else {
-          expiredBody.innerHTML =
-            "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
-        }
+        appendEmptyRow(
+          expiredBody,
+          allFiltersUnset ? "No expired tasks" : "No tasks matching filters"
+        );
       }
       if (todayBody.children.length === 0) {
-        if (allFiltersUnset)
-          todayBody.innerHTML =
-            "<tr><td colspan='5' style='text-align:center'>No tasks expiring today</td></tr>";
-        else {
-          todayBody.innerHTML =
-            "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
-        }
+        appendEmptyRow(
+          todayBody,
+          allFiltersUnset
+            ? "No tasks expiring today"
+            : "No tasks matching filters"
+        );
       }
       if (upcomingBody.children.length === 0) {
-        if (allFiltersUnset)
-          upcomingBody.innerHTML =
-            "<tr><td colspan='5' style='text-align:center'>No upcoming tasks</td></tr>";
-        else {
-          upcomingBody.innerHTML =
-            "<tr><td colspan='5' style='text-align:center'>No tasks matching filters</td></tr>";
-        }
+        appendEmptyRow(
+          upcomingBody,
+          allFiltersUnset ? "No upcoming tasks" : "No tasks matching filters"
+        );
       }
+
       document.getElementById("overview-expired").textContent =
         expiredTaskCount;
       document.getElementById("overview-today").textContent = todayTaskCount;
@@ -353,6 +394,7 @@ function loadTasks() {
         upcomingTaskCount;
     });
 }
+
 function resetFilters() {
   document.getElementById("titleSearch").value = "";
   document.getElementById("descriptionSearch").value = "";
@@ -369,7 +411,7 @@ function resetsorts() {
 }
 
 function toggleComplete(id, currentStatus) {
-  fetch("/backend/tasks/update.php", {
+  fetch("/Task-Management/backend/tasks/update.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -382,13 +424,13 @@ function toggleComplete(id, currentStatus) {
       if (data.success) {
         loadTasks();
         showNotification("Task updated successfully!", "success");
-      } else showNotification("Failed to update status");
+      } else showNotification("Failed to update status", "error");
     });
 }
 
 function deleteTask(id) {
   if (confirm("Are you sure you want to delete this task?")) {
-    fetch("/backend/tasks/delete.php", {
+    fetch("/Task-Management/backend/tasks/delete.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
@@ -404,60 +446,37 @@ function deleteTask(id) {
 }
 
 function logout() {
-  fetch("/backend/auth/logout.php").then(() => (location.href = "/login"));
+  fetch("/Task-Management/backend/auth/logout.php").then(
+    () => (location.href = "/Task-Management/login")
+  );
 }
 
 function showNotification(message, type = "success") {
   const notif = document.getElementById("notification");
   notif.className = `show ${type}`;
   notif.textContent = message;
-
+  notif.style.display = "block";
   setTimeout(() => {
     notif.className = notif.className.replace("show", "");
     setTimeout(() => {
       notif.style.display = "none";
     }, 400);
   }, 2500);
-
-  notif.style.display = "block";
 }
+
 function showMessagePopup(message) {
   const popup = document.getElementById("message-modal");
   document.getElementById("message-modal-text").textContent = message;
-  popup.style.display = "flex";
+  popup.classList.add("modal-visible");
 }
+
 function closeMessagePopup() {
-  document.getElementById("message-modal").style.display = "none";
-}
-
-function toggleTaskMenu(event, id) {
-  event.stopPropagation();
-  closeAllTaskMenus();
-  const menu = document.getElementById(`task-menu-${id}`);
-  const btn = event.currentTarget;
-  if (menu && btn) {
-    menu.style.display = "block";
-    menu.style.visibility = "hidden";
-    menu.style.top = "0px";
-    menu.style.left = "0px";
-
-    const btnRect = btn.getBoundingClientRect();
-    const parentRect = btn.offsetParent.getBoundingClientRect();
-    const menuWidth = menu.offsetWidth;
-
-    const top = btn.offsetTop;
-    const left = btn.offsetLeft - menuWidth - 8;
-
-    menu.style.top = `${top}px`;
-    menu.style.left = `${left}px`;
-    menu.style.visibility = "visible";
-    menu.style.zIndex = 9999;
-  }
+  document.getElementById("message-modal").classList.remove("modal-visible");
 }
 
 function closeAllTaskMenus() {
   document.querySelectorAll(".task-menu-dropdown").forEach((menu) => {
-    menu.style.display = "none";
+    menu.classList.remove("dropdown-visible");
   });
 }
 
@@ -468,11 +487,11 @@ const openSortModalBtn = document.getElementById("open-sort-modal");
 const sortForm = document.getElementById("sort-form");
 
 openSortModalBtn.onclick = function () {
-  sortModal.style.display = "block";
+  sortModal.classList.add("modal-visible");
 };
 
 function closeSortModal() {
-  sortModal.style.display = "none";
+  sortModal.classList.remove("modal-visible");
 }
 
 sortForm.onsubmit = function (e) {
@@ -480,3 +499,26 @@ sortForm.onsubmit = function (e) {
   closeSortModal();
   loadTasks();
 };
+
+document.getElementById("logout-link").addEventListener("click", logout);
+document
+  .getElementById("close-add-task-modal")
+  .addEventListener("click", closeAddTaskModal);
+document
+  .getElementById("close-sort-modal")
+  .addEventListener("click", closeSortModal);
+document
+  .getElementById("reset-sorting-btn")
+  .addEventListener("click", resetsorts);
+document
+  .getElementById("submit-reassign-btn")
+  .addEventListener("click", submitReassign);
+document
+  .getElementById("close-reassign-modal-btn")
+  .addEventListener("click", closeReassignModal);
+document
+  .getElementById("close-message-modal")
+  .addEventListener("click", closeMessagePopup);
+document
+  .getElementById("close-message-modal-btn")
+  .addEventListener("click", closeMessagePopup);

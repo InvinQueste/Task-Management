@@ -2,5 +2,5 @@
 session_start();
 $_SESSION = [];
 session_destroy();
-header("Location: /login");
+header("Location: /Task-Management/login");
 exit;

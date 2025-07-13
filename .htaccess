@@ -1,9 +1,8 @@
 RewriteEngine on
+RewriteBase /Task-Management/
 RewriteRule ^dashboard$ frontend/home/home.html [L]
 RewriteRule ^login$ frontend/auth/login.html [L]
 RewriteRule ^register$ frontend/auth/register.html [L]
-RewriteCond %{HTTPS} off
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 Header set X-Content-Type-Options "nosniff"
 Header set X-Frame-Options "DENY"
 Header set X-XSS-Protection "1; mode=block"

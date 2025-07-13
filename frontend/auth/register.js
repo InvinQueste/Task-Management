@@ -6,7 +6,7 @@ form.addEventListener("submit", function (e) {
 
   const formData = new FormData(form);
 
-  fetch("/backend/auth/register.php", {
+  fetch("/Task-Management/backend/auth/register.php", {
     method: "POST",
     body: formData,
   })
@@ -17,7 +17,7 @@ form.addEventListener("submit", function (e) {
       if (data.success) {
         form.reset();
         setTimeout(() => {
-          window.location.href = "/login";
+          window.location.href = "/Task-Management/login";
         }, 1000);
       }
     })
